@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Translate Program</string>
+    <string name="snack_bar_wpm">wpm값을 숫자로 입력해야합니다.\n기본값인 100으로 설정하시겠습니까?</string>
+    <string name="snack_bar_wpm_minus">0보다 큰 숫자를 입력해 주세요.</string>
+    <string name="snack_bar_gap">간격을 숫자로 작성해 주세요.\nex)2</string>
+    <string name="snack_bar_delete">삭제할 단어를 입력해 주세요.\nex)in</string>
+    <string name="snack_bar_equal">이미 추가된 단어입니다.</string>
+    <string name="snack_bar_delete_success">삭제할 단어로 추가되었습니다.</string>
+    <string name="snack_bar_format">txt형식으로 된 파일들만 학습 가능합니다.</string>
+    <string name="dialog_title">종료</string>
+    <string name="dialog_restart">재시작</string>
+    <string name="dialog_contents_restart">같은 wpm으로 재시작하시겠습니까?</string>
+    <string name="dialog_contents">종료하시겠습니까?</string>
+    <string name="dialog_yes">네</string>
+    <string name="dialog_no">아니오</string>
+    <string name="snack_bar_training">제일 첫 단어 입니다.\n 더이상 뒤로갈 수가 없습니다.</string>
+</resources>
