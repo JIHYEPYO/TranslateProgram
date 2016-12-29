@@ -12,9 +12,6 @@ import android.widget.ListView;
 import com.example.pyojihye.translateprogram.Movement.Const;
 import com.example.pyojihye.translateprogram.R;
 
-/**
- * Created by nsc1303-PJH on 2016-09-08.
- */
 public class ViewerModeOptionListFragment extends android.support.v4.app.Fragment {
     private final String TAG="ViewerModeOptionListFragment";
 
@@ -25,7 +22,7 @@ public class ViewerModeOptionListFragment extends android.support.v4.app.Fragmen
 
     @Override
     public void onResume() {
-        Log.d(TAG,"onResume()");
+//        Log.d(TAG,"onResume()");
 
         super.onResume();
         adapter.notifyDataSetChanged();
@@ -33,7 +30,7 @@ public class ViewerModeOptionListFragment extends android.support.v4.app.Fragmen
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d(TAG,"onCreateView()");
+//        Log.d(TAG,"onCreateView()");
 
         View v=inflater.inflate(R.layout.fragment_viewer_mode_option_list,container,false);
         listViewDelete=(ListView)v.findViewById(R.id.listViewDeleteWordList);

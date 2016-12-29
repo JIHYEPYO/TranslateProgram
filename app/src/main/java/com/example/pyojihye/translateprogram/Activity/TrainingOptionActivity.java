@@ -13,9 +13,6 @@ import android.widget.TextView;
 import com.example.pyojihye.translateprogram.Movement.Const;
 import com.example.pyojihye.translateprogram.R;
 
-/**
- * Created by nsc1303-PJH on 2016-08-22.
- */
 public class TrainingOptionActivity extends AppCompatActivity {
     private final String TAG="TrainingOptionActivity";
 

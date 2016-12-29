@@ -9,10 +9,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by nsc1303-PJH on 2016-10-05.
- */
-
 public class ModeTextView extends TextView {
     private int mAvailableWidth = 0;
     private Paint mPaint;

@@ -17,9 +17,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-/**
- * Created by PYOJIHYE on 2016-07-25.
- */
 public class ViewerActivity extends Activity {
     private final String TAG="ViewerActivity";
 

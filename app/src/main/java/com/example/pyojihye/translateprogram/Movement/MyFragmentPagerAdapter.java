@@ -8,10 +8,6 @@ import android.util.Log;
 import com.example.pyojihye.translateprogram.Fragment.ViewerModeOptionFragment;
 import com.example.pyojihye.translateprogram.Fragment.ViewerModeOptionListFragment;
 
-/**
- * Created by nsc1303-PJH on 2016-09-22.
- */
-
 public class MyFragmentPagerAdapter extends FragmentStatePagerAdapter {
     private final String TAG="MyFragmentPagerAdapter";
 

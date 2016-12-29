@@ -9,9 +9,6 @@ import android.view.ViewGroup;
 
 import com.example.pyojihye.translateprogram.R;
 
-/**
- * Created by nsc1303-PJH on 2016-08-20.
- */
 public class PlaceholderFragment extends Fragment {
     private final String TAG="PlaceholderFragment";
 

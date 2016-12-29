@@ -9,9 +9,6 @@ import android.view.View;
 import com.example.pyojihye.translateprogram.Movement.Const;
 import com.example.pyojihye.translateprogram.R;
 
-/**
- * Created by PYOJIHYE on 2016-07-25.
- */
 public class SelectModeActivity extends AppCompatActivity {
     private final String TAG="SelectModeActivity";
 

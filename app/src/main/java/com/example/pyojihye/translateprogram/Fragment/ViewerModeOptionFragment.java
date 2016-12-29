@@ -19,9 +19,6 @@ import com.example.pyojihye.translateprogram.Activity.ViewerActivity;
 import com.example.pyojihye.translateprogram.Movement.Const;
 import com.example.pyojihye.translateprogram.R;
 
-/**
- * Created by nsc1303-PJH on 2016-09-08.
- */
 public class ViewerModeOptionFragment extends Fragment {
     private final String TAG="ViewerModeOptionFragment";
 
@@ -34,7 +31,7 @@ public class ViewerModeOptionFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d(TAG,"onCreateView()");
+//        Log.d(TAG,"onCreateView()");
 
         View v=inflater.inflate(R.layout.fragment_viewer_mode_option,container,false);
 
@@ -46,7 +43,7 @@ public class ViewerModeOptionFragment extends Fragment {
 
             @Override
             public void onClick(View view) {
-                Log.d(TAG,"deleteButtonClick()");
+//                Log.d(TAG,"deleteButtonClick()");
 
                 View parent = (View)view.getParent();
                 if(editTextDelete.getText().toString().equals("")){
@@ -93,7 +90,7 @@ public class ViewerModeOptionFragment extends Fragment {
         buttonPrint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG,"PrintButtonClick()");
+//                Log.d(TAG,"PrintButtonClick()");
 
                 View parent = (View)view.getParent();
                 if(editTextGap.getText().toString().equals("")){

@@ -25,9 +25,6 @@ import com.example.pyojihye.translateprogram.R;
 import java.io.File;
 import java.util.ArrayList;
 
-/**
- * Created by PYOJIHYE on 2016-07-25.
- */
 public class PathActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     private final String TAG="PathActivity";
 
@@ -53,7 +50,7 @@ public class PathActivity extends AppCompatActivity implements AdapterView.OnIte
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         Log.d(TAG,"onKeyDown()");
 
-        //빽(취소)키가 눌렸을때 종료여부를 묻는 다이얼로그 띄움
+        //'뒤로가기'키가 눌렸을때 종료여부를 묻는 다이얼로그 띄움
         if((keyCode == KeyEvent.KEYCODE_BACK)) {
             AlertDialog.Builder d = new AlertDialog.Builder(PathActivity.this);
             d.setTitle(getString(R.string.dialog_title));
@@ -102,7 +99,7 @@ public class PathActivity extends AppCompatActivity implements AdapterView.OnIte
             if(checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
                     ||checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
 
-                //최초 거부를 선택하면 두번째부터 이벤트 발생 & 권한 획득이 필요한 이융를 설명
+                //최초 거부를 선택하면 두번째부터 이벤트 발생 & 권한 획득이 필요한 이유를 설명
                 if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                     Toast.makeText(this, "shouldShowRequestPermissionRationale", Toast.LENGTH_SHORT).show();
                 }

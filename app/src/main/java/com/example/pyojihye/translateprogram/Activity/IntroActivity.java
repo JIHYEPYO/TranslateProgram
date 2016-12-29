@@ -9,9 +9,6 @@ import android.view.Window;
 
 import com.example.pyojihye.translateprogram.R;
 
-/**
- * Created by PYOJIHYE on 2016-07-25.
- */
 public class IntroActivity extends Activity {
     private final String TAG="IntroActivity";
     Handler h;
