@@ -9,7 +9,7 @@ import com.example.pyojihye.translateprogram.Fragment.ViewerModeOptionFragment;
 import com.example.pyojihye.translateprogram.Fragment.ViewerModeOptionListFragment;
 
 public class MyFragmentPagerAdapter extends FragmentStatePagerAdapter {
-    private final String TAG="MyFragmentPagerAdapter";
+    private final String TAG = "MyFragmentPagerAdapter";
 
     public MyFragmentPagerAdapter(FragmentManager fm) {
         super(fm);
@@ -17,23 +17,23 @@ public class MyFragmentPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        Log.d(TAG,"getCount()");
+        Log.d(TAG, "getCount()");
 
         return 2;
     }
 
     @Override
     public int getItemPosition(Object object) {
-        Log.d(TAG,"getItemPosition()");
+        Log.d(TAG, "getItemPosition()");
 
         return super.getItemPosition(object);
     }
 
     @Override
     public Fragment getItem(int position) {
-        Log.d(TAG,"getItem()");
+        Log.d(TAG, "getItem()");
 
-        switch(position){
+        switch (position) {
             case 0:
                 return ViewerModeOptionFragment.getInstance();
 
@@ -48,9 +48,9 @@ public class MyFragmentPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        Log.d(TAG,"getPageTitle()");
+        Log.d(TAG, "getPageTitle()");
 
-        switch (position){
+        switch (position) {
             case 0:
                 return "Setting";
             case 1:

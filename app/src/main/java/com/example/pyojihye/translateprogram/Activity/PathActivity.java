@@ -26,11 +26,11 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class PathActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
-    private final String TAG="PathActivity";
+    private final String TAG = "PathActivity";
 
-    final private int APP_PERMISSION_STORAGE=1;
-    String root="";
-    String path="";
+    final private int APP_PERMISSION_STORAGE = 1;
+    String root = "";
+    String path = "";
     TextView textMsg;
     ListView listFile;
     ArrayList<String> arrayFile;
@@ -43,21 +43,21 @@ public class PathActivity extends AppCompatActivity implements AdapterView.OnIte
 
         textMsg = (TextView) findViewById(R.id.textViewPath);
         checkPermission();
-        Log.d(TAG,"onCreate()");
+        Log.d(TAG, "onCreate()");
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Log.d(TAG,"onKeyDown()");
+        Log.d(TAG, "onKeyDown()");
 
         //'뒤로가기'키가 눌렸을때 종료여부를 묻는 다이얼로그 띄움
-        if((keyCode == KeyEvent.KEYCODE_BACK)) {
+        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
             AlertDialog.Builder d = new AlertDialog.Builder(PathActivity.this);
             d.setTitle(getString(R.string.dialog_title));
             d.setMessage(getString(R.string.dialog_contents));
             d.setIcon(R.mipmap.ic_launcher);
 
-            d.setPositiveButton(getString(R.string.dialog_yes),new DialogInterface.OnClickListener() {
+            d.setPositiveButton(getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     // TODO Auto-generated method stub
@@ -65,7 +65,7 @@ public class PathActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
             });
 
-            d.setNegativeButton(getString(R.string.dialog_no),new DialogInterface.OnClickListener() {
+            d.setNegativeButton(getString(R.string.dialog_no), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     // TODO Auto-generated method stub
@@ -80,10 +80,10 @@ public class PathActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
 
-    private void checkPermission(){
-        Log.d(TAG,"checkPermission()");
+    private void checkPermission() {
+        Log.d(TAG, "checkPermission()");
 
-        if(android.os.Build.VERSION.SDK_INT < 23){ //23버전보다 낮을때
+        if (android.os.Build.VERSION.SDK_INT < 23) { //23버전보다 낮을때
             root = Environment.getExternalStorageDirectory().getAbsolutePath();
             String[] fileList = getFileList(root);
 
@@ -94,10 +94,9 @@ public class PathActivity extends AppCompatActivity implements AdapterView.OnIte
             }
             initListView();
             fileListArray(fileList);
-        }
-        else{ //23버전보다 높을때
-            if(checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                    ||checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+        } else { //23버전보다 높을때
+            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                    || checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
                 //최초 거부를 선택하면 두번째부터 이벤트 발생 & 권한 획득이 필요한 이유를 설명
                 if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
@@ -106,12 +105,12 @@ public class PathActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 //요청 팝업 팝업 선택시 onRequestPermissionsResult 이동
                 requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE},
                         APP_PERMISSION_STORAGE);
 
             }
             //권한이 있는 경우
-            else{
+            else {
                 root = Environment.getExternalStorageDirectory().getAbsolutePath();
                 String[] fileList = getFileList(root);
 
@@ -128,7 +127,7 @@ public class PathActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        Log.d(TAG,"onRequestPermissionResult()");
+        Log.d(TAG, "onRequestPermissionResult()");
 
         root = Environment.getExternalStorageDirectory().getAbsolutePath();
         String[] fileList = getFileList(root);
@@ -142,83 +141,83 @@ public class PathActivity extends AppCompatActivity implements AdapterView.OnIte
         fileListArray(fileList);
     }
 
-    public void initListView(){
-        Log.d(TAG,"initListView()");
+    public void initListView() {
+        Log.d(TAG, "initListView()");
 
-        arrayFile=new ArrayList<String>();
-        ArrayAdapter<String> adapter=new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,arrayFile);
+        arrayFile = new ArrayList<String>();
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arrayFile);
 
-        listFile = (ListView)findViewById(R.id.listViewPath);
+        listFile = (ListView) findViewById(R.id.listViewPath);
         listFile.setAdapter(adapter);
         listFile.setOnItemClickListener(this);
     }
 
-    public void fileListArray(String[] fileList){
-        Log.d(TAG,"fileListArray()");
+    public void fileListArray(String[] fileList) {
+        Log.d(TAG, "fileListArray()");
 
-        if(fileList==null){
+        if (fileList == null) {
             return;
         }
 
         arrayFile.clear();
-        if(root.length()<path.length()){
+        if (root.length() < path.length()) {
             arrayFile.add("..");
         }
 
-        for(int i=0;i<fileList.length;i++){
+        for (int i = 0; i < fileList.length; i++) {
 //            Log.d("tag",fileList[i]);
             arrayFile.add(fileList[i]);
         }
 
-        ArrayAdapter adapter = (ArrayAdapter)listFile.getAdapter();
+        ArrayAdapter adapter = (ArrayAdapter) listFile.getAdapter();
         adapter.notifyDataSetChanged();
     }
 
-    public String[] getFileList(String strPath){
-        Log.d(TAG,"getFileList()");
+    public String[] getFileList(String strPath) {
+        Log.d(TAG, "getFileList()");
 
         File fileRoot = new File(strPath);
 
-        if(fileRoot.isDirectory()==false){
+        if (fileRoot.isDirectory() == false) {
             return null;
         }
 
-        path=strPath;
+        path = strPath;
         textMsg.setText(path);
-        String[] fileList=fileRoot.list();
+        String[] fileList = fileRoot.list();
         return fileList;
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Log.d(TAG,"onItemClick()");
+        Log.d(TAG, "onItemClick()");
 
         Const.strItem = arrayFile.get(position);
-        Const.strPath=getCurrentPath(Const.strItem);
-        String[] fileList=getFileList(Const.strPath);
+        Const.strPath = getCurrentPath(Const.strItem);
+        String[] fileList = getFileList(Const.strPath);
         fileListArray(fileList);
 
         if (Const.strItem.endsWith("txt")) {
-            Intent selectIntent = new Intent(getApplicationContext(),SelectModeActivity.class);
+            Intent selectIntent = new Intent(getApplicationContext(), SelectModeActivity.class);
             startActivity(selectIntent);
-        }else if(Const.strItem.contains(".") && !Const.strItem.startsWith(".")){
-            Snackbar snackbar = Snackbar.make(parent.findViewById(R.id.listViewPath),R.string.snack_bar_format, Snackbar.LENGTH_LONG);
+        } else if (Const.strItem.contains(".") && !Const.strItem.startsWith(".")) {
+            Snackbar snackbar = Snackbar.make(parent.findViewById(R.id.listViewPath), R.string.snack_bar_format, Snackbar.LENGTH_LONG);
             View v = snackbar.getView();
-            TextView textView = (TextView)v.findViewById(android.support.design.R.id.snackbar_text);
+            TextView textView = (TextView) v.findViewById(android.support.design.R.id.snackbar_text);
             textView.setTextColor(Color.WHITE);
             snackbar.show();
         }
     }
 
-    public String getCurrentPath(String strFolder){
-        Log.d(TAG,"getCurrentPath()");
+    public String getCurrentPath(String strFolder) {
+        Log.d(TAG, "getCurrentPath()");
 
         String strPath;
-        if(strFolder==".."){
-            int pos=path.lastIndexOf("/");
-            strPath=path.substring(0,pos);
-        }else{
-            strPath=path+"/"+strFolder;
+        if (strFolder == "..") {
+            int pos = path.lastIndexOf("/");
+            strPath = path.substring(0, pos);
+        } else {
+            strPath = path + "/" + strFolder;
         }
         return strPath;
     }

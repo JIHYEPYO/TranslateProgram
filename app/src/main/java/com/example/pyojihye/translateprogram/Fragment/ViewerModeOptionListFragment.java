@@ -13,7 +13,7 @@ import com.example.pyojihye.translateprogram.Movement.Const;
 import com.example.pyojihye.translateprogram.R;
 
 public class ViewerModeOptionListFragment extends android.support.v4.app.Fragment {
-    private final String TAG="ViewerModeOptionListFragment";
+    private final String TAG = "ViewerModeOptionListFragment";
 
     private static ViewerModeOptionListFragment instance = new ViewerModeOptionListFragment();
     ArrayAdapter<String> adapter;
@@ -32,8 +32,8 @@ public class ViewerModeOptionListFragment extends android.support.v4.app.Fragmen
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 //        Log.d(TAG,"onCreateView()");
 
-        View v=inflater.inflate(R.layout.fragment_viewer_mode_option_list,container,false);
-        listViewDelete=(ListView)v.findViewById(R.id.listViewDeleteWordList);
+        View v = inflater.inflate(R.layout.fragment_viewer_mode_option_list, container, false);
+        listViewDelete = (ListView) v.findViewById(R.id.listViewDeleteWordList);
         adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, Const.delete);
         listViewDelete.setAdapter(adapter);
         listViewDelete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -47,7 +47,7 @@ public class ViewerModeOptionListFragment extends android.support.v4.app.Fragmen
         return v;
     }
 
-    public static synchronized ViewerModeOptionListFragment getInstance(){
+    public static synchronized ViewerModeOptionListFragment getInstance() {
         return instance;
     }
 }

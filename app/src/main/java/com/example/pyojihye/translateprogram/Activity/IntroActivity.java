@@ -10,32 +10,32 @@ import android.view.Window;
 import com.example.pyojihye.translateprogram.R;
 
 public class IntroActivity extends Activity {
-    private final String TAG="IntroActivity";
+    private final String TAG = "IntroActivity";
     Handler h;
 
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_intro);
-        h=new Handler();
-        h.postDelayed(irun,2000);
-        Log.d(TAG,"onCreate()");
+        h = new Handler();
+        h.postDelayed(irun, 2000);
+        Log.d(TAG, "onCreate()");
     }
 
-    Runnable irun=new Runnable(){
-        public void run(){
-            Intent i=new Intent(IntroActivity.this,PathActivity.class);
+    Runnable irun = new Runnable() {
+        public void run() {
+            Intent i = new Intent(IntroActivity.this, PathActivity.class);
             startActivity(i);
             finish();
-            overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
-            Log.d(TAG,"Runnable()");
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            Log.d(TAG, "Runnable()");
         }
     };
 
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         super.onBackPressed();
         h.removeCallbacks(irun);
-        Log.d(TAG,"onBackPressed()");
+        Log.d(TAG, "onBackPressed()");
     }
 }

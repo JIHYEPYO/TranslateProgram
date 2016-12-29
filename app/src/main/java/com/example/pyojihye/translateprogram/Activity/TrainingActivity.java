@@ -3,15 +3,16 @@ package com.example.pyojihye.translateprogram.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,14 +28,12 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.pyojihye.translateprogram.Movement.Const.replace;
-import static com.example.pyojihye.translateprogram.Movement.Const.replace_num;
-import static com.example.pyojihye.translateprogram.R.id.TextViewTraining;
+import static com.example.pyojihye.translateprogram.Movement.Const.*;
 
 public class TrainingActivity extends AppCompatActivity {
 
     private final String TAG = "TrainingActivity";
-    private TextView textViewTraining;
+    private WebView webViewTraining;
     private ImageView imageViewStart;
     private ImageView imageViewPast;
     private ImageView imageViewFuture;
@@ -50,6 +49,8 @@ public class TrainingActivity extends AppCompatActivity {
     private boolean threadStart = false;
     private List<String> origin = new ArrayList<>();
     private TrainingThread trainingThread;
+    private boolean change = false;
+    public String htmlText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,30 +59,29 @@ public class TrainingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_training_mode);
 
-        textViewTraining = (TextView) findViewById(TextViewTraining);
-        Typeface face = Typeface.createFromAsset(getAssets(), "D2Coding.ttc");
-        textViewTraining.setTypeface(face);
+        webViewTraining = (WebView) findViewById(R.id.WebViewTraining);
+//        Typeface face = Typeface.createFromAsset(getAssets(), "D2Coding.ttc");
+//        webViewTraining.setTypeface(face);
         imageViewStart = (ImageView) findViewById(R.id.imageViewStart);
         imageViewPast = (ImageView) findViewById(R.id.imageViewPast);
         imageViewFuture = (ImageView) findViewById(R.id.imageViewFuture);
         imageViewStart.setImageResource(R.drawable.start);
         numberPercent = (TextView) findViewById(R.id.numberPercent);
-        textViewTraining.setVisibility(View.INVISIBLE);
-        Log.d(TAG, "onCreate()");
+        webViewTraining.setVisibility(View.INVISIBLE);
+//        Log.d(TAG, "onCreate()");
     }
 
     @Override
     protected void onResume() {
-        Log.d(TAG, "onResume()");
+//        Log.d(TAG, "onResume()");
         super.onResume();
         replace.clear();
-        replace_num = 0;
         BufferedReader bufferedReader = null;
         FileInputStream fileInputStream;
         String strPath = null;
 
         imageViewStart.setImageResource(R.drawable.start);
-        textViewTraining.setVisibility(View.INVISIBLE);
+        webViewTraining.setVisibility(View.INVISIBLE);
         imageViewPast.setImageResource(0);
         imageViewFuture.setImageResource(0);
         imageViewPast.setClickable(false);
@@ -97,22 +97,37 @@ public class TrainingActivity extends AppCompatActivity {
 
                 while ((strPath = bufferedReader.readLine()) != null) {
                     buf.append(strPath + '\n');
-//                    Log.v("strPath: ", strPath+"");
                 }
 
                 int point = 0;
                 for (int i = 0; i < buf.length(); i++) {
-                    if (buf.charAt(i) == ' ' || buf.charAt(i) == '\n') {
+                    if (buf.charAt(i) == ' ') {
                         replace.add(buf.substring(point, i + 1));
                         origin.add(buf.substring(point, i + 1));
+                        point = i + 1;
+                    }
+                    if (buf.charAt(i) == '\n') {
+                        replace.add(buf.substring(point, i));
+                        replace.set(replace.size() - 1, replace.get(replace.size() - 1) + "<br>");
+
+                        origin.add(buf.substring(point, i));
+                        origin.set(replace.size() - 1, origin.get(origin.size() - 1) + "<br>");
                         point = i + 1;
                     }
                 }
 
                 fileInputStream.close();
-                textViewTraining.setText(buf.toString());
+
+                String str = "";
+
+                for (int i = 0; i < replace.size(); i++) {
+                    str += replace.get(i);
+                }
+                htmlText = "<html><head><style>@font-face { font-family: \"MyFont\"; src: url('file:///android_asset/fonts/D2Coding.ttc'); }p{font-family:\"MyFont\"}</style></head><body><p style=\"text-align: justify;)\"> %s </p></body></html>";
+                webViewTraining.loadData(String.format(htmlText, str), "text/html", "utf-8");
+                webViewTraining.setBackgroundColor(getResources().getColor(R.color.colorGray));
             }
-            Log.d(TAG, "onResume()");
+//            Log.d(TAG, "onResume()");
             num = 100;
             handler.sendEmptyMessage(1);
         } catch (FileNotFoundException e) {
@@ -123,10 +138,9 @@ public class TrainingActivity extends AppCompatActivity {
     }
 
     public void onStartClick(View v) {
-
-        Log.d(TAG, "onStartClick()");
+//        Log.d(TAG, "onStartClick()");
         if (!startChange) {
-            textViewTraining.setVisibility(View.VISIBLE);
+            webViewTraining.setVisibility(View.VISIBLE);
             startChange = true;
             imageViewStart.setImageResource(R.drawable.pause);
             imageViewPast.setImageResource(0);
@@ -141,20 +155,27 @@ public class TrainingActivity extends AppCompatActivity {
             }
         } else {
             startChange = false;
+            change = false;
             imageViewStart.setImageResource(R.drawable.start);
             imageViewPast.setImageResource(R.drawable.past);
             imageViewFuture.setImageResource(R.drawable.future);
             imageViewPast.setClickable(true);
             imageViewFuture.setClickable(true);
         }
-        Log.d(TAG, "onStartClick()");
     }
 
     public void onPastClick(View v) {
-        Log.d(TAG, "onPastClick()");
+//        Log.d(TAG, "onPastClick()");
         int position;
+
         if (currentPosition != 0) {
-            replace.set(currentPosition - 1, origin.get(currentPosition - 1));
+            if (!change) {
+                replace.set(currentPosition - 1, origin.get(currentPosition - 1));
+            } else {
+                startPosition = currentPosition - 1;
+                replace.set(currentPosition - 1, origin.get(currentPosition - 1));
+            }
+
             currentPosition--;
 
             String str = "";
@@ -162,10 +183,10 @@ public class TrainingActivity extends AppCompatActivity {
                 str += s;
             }
             replaceTextView = str;
-
+            PercentCalculate();
             handler.sendEmptyMessage(0);
         } else {
-            Snackbar snackbar = Snackbar.make(findViewById(TextViewTraining), R.string.snack_bar_training, Snackbar.LENGTH_LONG);
+            Snackbar snackbar = Snackbar.make(findViewById(R.id.numberPercent), R.string.snack_bar_training, Snackbar.LENGTH_LONG);
 
             View view = snackbar.getView();
             TextView textView = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
@@ -176,6 +197,7 @@ public class TrainingActivity extends AppCompatActivity {
 
     public void onFutureClick(View v) {
         Log.d(TAG, "onFutureClick()");
+        change = true;
         Training();
     }
 
@@ -187,44 +209,41 @@ public class TrainingActivity extends AppCompatActivity {
         endPosition = replace.size();
 
         Log.v("Word count: ", endPosition + "");
-//        //안드로이드 휴대폰 상에서 몇줄인지를 나타내는 구문
-//        textViewTraining.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                LineNum=textViewTraining.getLineCount();
-//                Log.v("Line count: ", textViewTraining.getLineCount()+"");
-//            }
-//        });
     }
 
     private void Training() {
         if (currentPosition < endPosition) {
             String text = "";
-//                Log.v("textView :",textViewTraining.getText()+"");
 
             String spacebar = "";
             text = replace.get(currentPosition);
 
             for (int i = 0; i < text.length(); i++) {
-                if (text.charAt(i) == '\n') {
-                    spacebar = spacebar + "\n";
+                if (text.substring(i, text.length()).equals("<br>")) {
+                    spacebar = spacebar + "<br>";
+                    replace.set(currentPosition, spacebar);
+                    startPosition = currentPosition + 1;
+                    break;
                 } else {
-                    spacebar = spacebar + " ";
+                    spacebar = spacebar + "&nbsp;";
+                    replace.set(currentPosition, spacebar);
                 }
             }
-            replace.set(currentPosition, spacebar);
+
             String str = "";
-            for (String s : replace) {
-                str += s;
+
+            for (int i = startPosition; i < endPosition; i++) {
+                str += replace.get(i);
             }
+
             replaceTextView = str;
 
             handler.sendEmptyMessage(0);
             PercentCalculate();
             currentPosition++;
 
-            Log.v("startPosition :", startPosition + "");
-            Log.v("endPosition :", endPosition + "");
+//            Log.v("startPosition :", startPosition + "");
+//            Log.v("endPosition :", endPosition + "");
         } else {
             PercentCalculate();
             startChange = true;
@@ -291,8 +310,12 @@ public class TrainingActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 0:
-                    textViewTraining.setText(replaceTextView);
-                    //                Log.v("replaceTextView :",replaceTextView+"");
+//                    String st="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+//                    if(replaceTextView.contains(st)){
+//                        replaceTextView.replaceAll("",st);
+//                    }
+                    webViewTraining.loadData(String.format(htmlText, replaceTextView), "text/html", "utf-8");
+
                     break;
                 case 1:
                     numberPercent.setText(num + "%");
@@ -308,9 +331,6 @@ public class TrainingActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             // TODO Auto-generated method stub
-//                            Intent intent = getIntent();
-//                            startActivity(intent);
-//                            finish();
                             onResume();
                             threadStart = false;
                         }

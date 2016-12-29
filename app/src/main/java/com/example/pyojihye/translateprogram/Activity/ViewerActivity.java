@@ -16,16 +16,22 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.example.pyojihye.translateprogram.Movement.Const.delete;
+import static com.example.pyojihye.translateprogram.Movement.Const.gap;
 
 public class ViewerActivity extends Activity {
-    private final String TAG="ViewerActivity";
+    private final String TAG = "ViewerActivity";
 
+    private List<String> word = new ArrayList<>();
     public TextView textViewViewer;
     private int wordNum = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG,"onCreate()");
+        Log.d(TAG, "onCreate()");
 
         setTitle("Viewer Mode");
         super.onCreate(savedInstanceState);
@@ -38,7 +44,7 @@ public class ViewerActivity extends Activity {
 
     @Override
     protected void onResume() {
-        Log.d(TAG,"onResume()");
+        Log.d(TAG, "onResume()");
 
         super.onResume();
         BufferedReader bufferedReader = null;
@@ -57,76 +63,71 @@ public class ViewerActivity extends Activity {
                     buf.append(strPath + "\n");
                 }
 
-                String countText = "";
-                int beforeSpace = 0;
-                int count=0;
-                for (int i = 0; i < buf.length(); i++) { //파일에 담겨있는 글자 수만큼 반복
-                    boolean countChange = false;
-                    if (buf.charAt(i)==' '||buf.charAt(i)=='\n'||buf.charAt(i)==','||buf.charAt(i)==':'||buf.charAt(i)=='/'||buf.charAt(i)=='\"'||buf.charAt(i)=='\'') { //띄어쓰기로 wordNum값 증가 시키기 위해, 초기에 이거 Gap을 위해서 사용했었음
-                        if (Const.gap != 0) { //Gap이 0이 아닐때
-                            if (count==Const.gap || wordNum==0) { //Gap의 간격일경우에
-                                String countUnderbar = "";
-                                for (int j = 0; j < countText.length(); j++) {
-                                    countUnderbar = countUnderbar + "_";
-                                }
-                                buf.replace(beforeSpace, i, countUnderbar);
-                                countText = "";
-                                countChange = true;
-                                count=0;
-                            }else{
-                                count++;
-                            }
-                            if (countChange == false) { //countChange가 변경되지 않았을 때
-                                countText = "";
-                            }
-                            beforeSpace = i + 1;
-                        }
-                        wordNum++;
-                    }else { //Gap이 0이 아니거나 줄바꿈하지 않았을때.
-                        countText += buf.charAt(i);
+                //delete와 word 배열에 값 할당
+                int point = 0;
+                for (int i = 0; i < buf.length(); i++) {
+                    if (buf.charAt(i) == ' ' || buf.charAt(i) == '\n') {
+                        word.add(buf.substring(point, i + 1));
+                        point = i + 1;
                     }
                 }
 
-//                Log.v("Replace : ",buf.toString());
-                beforeSpace=0;
-                if(Const.delete.size()>0){
-                    String text="";
-                    int find=0; //delete에서 찾아야 하는 단어 수
-
-                    for(int i=0;i<buf.length();i++){ //파일에 담겨있는 글자 수만큼 반복
-                        if(buf.charAt(i)==' '||buf.charAt(i)=='\n'||buf.charAt(i)==','||buf.charAt(i)==':'||buf.charAt(i)=='/'||buf.charAt(i)=='\"'||buf.charAt(i)=='\''){
-                            String underbar="";
-                            for(int j=0;j<text.length();j++){ //단어의 수만큼 _를 찍어주는거
-                                underbar=underbar+"_";
+                //Gap먼저 시작.
+                //Gap이 0이 아닐때만 반복되도록 설정
+                if (gap != 0) {
+                    String text;
+                    for (int i = 0; i < word.size(); i++) {
+                        if (i % (gap + 1) == 0) {
+                            String underbar = "";
+                            text = word.get(i);
+                            for (int j = 0; j < text.length() - 1; j++) {
+                                underbar += "_";
                             }
-                            boolean change=false;
-                            for(int k=0;k<Const.delete.size();k++){
-                                Log.v("검색한다",Const.delete.get(k));
-                                if(Const.delete.get(k).equalsIgnoreCase(text)){
-                                    buf.replace(beforeSpace, i, underbar);
-                                    change=true;
-                                    text="";
-                                }else{
-                                    find++;
-                                    text="";
-                                }
-                                if(find==Const.delete.size() && change==false){
-                                    text="";
-                                }
+                            if (text.charAt(text.length() - 1) == '\n') {
+                                underbar += "\n";
+                            } else {
+                                underbar += " ";
                             }
-                            beforeSpace=i+1;
-                        }else{
-                            text+=buf.charAt(i);
+                            word.set(i, underbar);
                         }
                     }
                 }
-//                Log.v("Replace : ",buf.toString());
+
+                //삭제할 단어를 입력한 경우에만
+                if (delete.size() > 0) {
+                    String text;
+                    for (int i = 0; i < word.size(); i++) {
+                        for (int j = 0; j < delete.size(); j++) {
+                            if (word.get(i).equals(delete.get(j) + " ") || word.get(i).equals(delete.get(j) + "\n")) {
+                                text = word.get(i);
+
+                                String underbar = "";
+                                text = word.get(i);
+                                for (int k = 0; k < text.length() - 1; k++) {
+                                    underbar += "_";
+                                }
+                                if (text.charAt(text.length() - 1) == '\n') {
+                                    underbar += "\n";
+                                } else {
+                                    underbar += " ";
+                                }
+                                word.set(i, underbar);
+                            }
+                        }
+                    }
+                }
 
                 fileInputStream.close();
-                textViewViewer.setText(buf.toString());
+
+                String str = "";
+                for (String s : word) {
+                    str += s;
+                }
+                textViewViewer.setText(str);
             }
             Log.v("TextView : ", textViewViewer.getText().toString());
             Log.d(TAG, "onResume()");
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
