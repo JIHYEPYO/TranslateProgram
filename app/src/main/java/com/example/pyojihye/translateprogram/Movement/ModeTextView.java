@@ -36,18 +36,31 @@ public class ModeTextView extends TextView {
 
             mCutStr.clear();
             int end = 0;
+            boolean exit=false;
             do {
                 // 글자가 width 보다 넘어가는지 체크
                 end = mPaint.breakText(text, true, mAvailableWidth, null);
-                if (end > 0) {
+                if (end > 0 && !text.substring(0,end).contains("\n")) {
                     // 자른 문자열을 문자열 배열에 담아 놓는다.
                     mCutStr.add(text.substring(0, end));
                     // 넘어간 글자 모두 잘라 다음에 사용하도록 세팅
                     text = text.substring(end);
                     // 다음라인 높이 지정
                     if (textHeight == 0) mTextHeight += getLineHeight();
+                }else if(text.contains("\n")){
+                    exit=false;
+                    end=text.indexOf("\n")+1;
+                    // 자른 문자열을 문자열 배열에 담아 놓는다.
+                    mCutStr.add(text.substring(0, end));
+                    // 넘어간 글자 모두 잘라 다음에 사용하도록 세팅
+                    text = text.substring(end);
+                    // 다음라인 높이 지정
+                    if (textHeight == 0) mTextHeight += getLineHeight();
+                }else if(text.length()==0){
+                    end=0;
+                    exit=true;
                 }
-            } while (end > 0);
+            } while (end > 0 && !exit);
         }
         mTextHeight += getPaddingTop() + getPaddingBottom();
         return mTextHeight;

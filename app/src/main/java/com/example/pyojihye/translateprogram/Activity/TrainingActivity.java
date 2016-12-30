@@ -3,6 +3,7 @@ package com.example.pyojihye.translateprogram.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -11,12 +12,14 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.pyojihye.translateprogram.Movement.Const;
+import com.example.pyojihye.translateprogram.Movement.ModeTextView;
 import com.example.pyojihye.translateprogram.R;
 
 import java.io.BufferedReader;
@@ -33,7 +36,7 @@ import static com.example.pyojihye.translateprogram.Movement.Const.*;
 public class TrainingActivity extends AppCompatActivity {
 
     private final String TAG = "TrainingActivity";
-    private WebView webViewTraining;
+    private ModeTextView modeTextViewTraining;
     private ImageView imageViewStart;
     private ImageView imageViewPast;
     private ImageView imageViewFuture;
@@ -59,15 +62,16 @@ public class TrainingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_training_mode);
 
-        webViewTraining = (WebView) findViewById(R.id.WebViewTraining);
-//        Typeface face = Typeface.createFromAsset(getAssets(), "D2Coding.ttc");
-//        webViewTraining.setTypeface(face);
+        modeTextViewTraining = (ModeTextView) findViewById(R.id.ModeTextViewTraining);
+        Typeface face = Typeface.createFromAsset(getAssets(), "D2Coding.ttc");
+        modeTextViewTraining.setTypeface(face);
         imageViewStart = (ImageView) findViewById(R.id.imageViewStart);
         imageViewPast = (ImageView) findViewById(R.id.imageViewPast);
         imageViewFuture = (ImageView) findViewById(R.id.imageViewFuture);
         imageViewStart.setImageResource(R.drawable.start);
         numberPercent = (TextView) findViewById(R.id.numberPercent);
-        webViewTraining.setVisibility(View.INVISIBLE);
+        modeTextViewTraining.setVisibility(View.INVISIBLE);
+
 //        Log.d(TAG, "onCreate()");
     }
 
@@ -81,7 +85,7 @@ public class TrainingActivity extends AppCompatActivity {
         String strPath = null;
 
         imageViewStart.setImageResource(R.drawable.start);
-        webViewTraining.setVisibility(View.INVISIBLE);
+        modeTextViewTraining.setVisibility(View.INVISIBLE);
         imageViewPast.setImageResource(0);
         imageViewFuture.setImageResource(0);
         imageViewPast.setClickable(false);
@@ -108,10 +112,10 @@ public class TrainingActivity extends AppCompatActivity {
                     }
                     if (buf.charAt(i) == '\n') {
                         replace.add(buf.substring(point, i));
-                        replace.set(replace.size() - 1, replace.get(replace.size() - 1) + "<br>");
+                        replace.set(replace.size() - 1, replace.get(replace.size() - 1) + "\n");
 
                         origin.add(buf.substring(point, i));
-                        origin.set(replace.size() - 1, origin.get(origin.size() - 1) + "<br>");
+                        origin.set(replace.size() - 1, origin.get(origin.size() - 1) + "\n");
                         point = i + 1;
                     }
                 }
@@ -119,13 +123,10 @@ public class TrainingActivity extends AppCompatActivity {
                 fileInputStream.close();
 
                 String str = "";
-
                 for (int i = 0; i < replace.size(); i++) {
                     str += replace.get(i);
                 }
-                htmlText = "<html><head><style>@font-face { font-family: \"MyFont\"; src: url('file:///android_asset/fonts/D2Coding.ttc'); }p{font-family:\"MyFont\"}</style></head><body><p style=\"text-align: justify;)\"> %s </p></body></html>";
-                webViewTraining.loadData(String.format(htmlText, str), "text/html", "utf-8");
-                webViewTraining.setBackgroundColor(getResources().getColor(R.color.colorGray));
+                modeTextViewTraining.setText(str);
             }
 //            Log.d(TAG, "onResume()");
             num = 100;
@@ -140,7 +141,7 @@ public class TrainingActivity extends AppCompatActivity {
     public void onStartClick(View v) {
 //        Log.d(TAG, "onStartClick()");
         if (!startChange) {
-            webViewTraining.setVisibility(View.VISIBLE);
+            modeTextViewTraining.setVisibility(View.VISIBLE);
             startChange = true;
             imageViewStart.setImageResource(R.drawable.pause);
             imageViewPast.setImageResource(0);
@@ -219,13 +220,13 @@ public class TrainingActivity extends AppCompatActivity {
             text = replace.get(currentPosition);
 
             for (int i = 0; i < text.length(); i++) {
-                if (text.substring(i, text.length()).equals("<br>")) {
-                    spacebar = spacebar + "<br>";
+                if (text.substring(i, text.length()).equals("\n")) {
+                    spacebar = spacebar + "\n";
                     replace.set(currentPosition, spacebar);
                     startPosition = currentPosition + 1;
                     break;
                 } else {
-                    spacebar = spacebar + "&nbsp;";
+                    spacebar = spacebar + " ";
                     replace.set(currentPosition, spacebar);
                 }
             }
@@ -310,11 +311,12 @@ public class TrainingActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 0:
-//                    String st="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-//                    if(replaceTextView.contains(st)){
-//                        replaceTextView.replaceAll("",st);
-//                    }
-                    webViewTraining.loadData(String.format(htmlText, replaceTextView), "text/html", "utf-8");
+                    String st="                          ";
+                    if(replaceTextView.contains(st)){
+                        replaceTextView=replaceTextView.replace(st,"");
+                        startPosition=currentPosition;
+                    }
+                    modeTextViewTraining.setText(replaceTextView);
 
                     break;
                 case 1:
@@ -350,4 +352,16 @@ public class TrainingActivity extends AppCompatActivity {
             }
         }
     };
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        Log.d(TAG, "onKeyDown()");
+
+        //'뒤로가기'키가 눌렸을때 종료여부를 묻는 다이얼로그 띄움
+        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+            trainingThread.pause();
+            trainingThread.interrupt();
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 }

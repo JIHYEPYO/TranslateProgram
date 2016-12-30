@@ -12,10 +12,10 @@
         android:layout_weight="1"
         android:layout_margin="15dp">
 
-        <WebView
+        <com.example.pyojihye.translateprogram.Movement.ModeTextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/WebViewTraining"
+            android:id="@+id/ModeTextViewTraining"
             android:background="@color/colorGray"
             android:textSize="25dp"/>
 
