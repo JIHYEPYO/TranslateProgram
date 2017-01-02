@@ -12,4 +12,6 @@ public class Const {
     public static int delete_num;
 
     public static List<String> replace = new ArrayList<String>();
+    public static int Max;
+    public static String MESSAGE_URL = "https://translateprogram-e53b4.firebaseio.com/";
 }

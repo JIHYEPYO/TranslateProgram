@@ -12,6 +12,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,6 +22,18 @@ import android.widget.TextView;
 import com.example.pyojihye.translateprogram.Movement.Const;
 import com.example.pyojihye.translateprogram.Movement.ModeTextView;
 import com.example.pyojihye.translateprogram.R;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.appindexing.Action;
+import com.google.firebase.appindexing.FirebaseAppIndex;
+import com.google.firebase.appindexing.FirebaseUserActions;
+import com.google.firebase.appindexing.Indexable;
+import com.google.firebase.appindexing.builders.Indexables;
+import com.google.firebase.appindexing.builders.PersonBuilder;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -26,14 +41,34 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import static com.example.pyojihye.translateprogram.Movement.Const.MESSAGE_URL;
+import static com.example.pyojihye.translateprogram.Movement.Const.Max;
 import static com.example.pyojihye.translateprogram.Movement.Const.replace;
+import static com.example.pyojihye.translateprogram.Movement.Const.strItem;
 
 public class TrainingActivity extends AppCompatActivity {
 
     private final String TAG = "TrainingActivity";
+    private final String ANONYMOUS = "ANONYMOUS";
+    private final String MESSAGES_CHILD = "Training";
+
+
+    // Firebase instance variables
+    private DatabaseReference mFirebaseDatabaseReference;
+    private FirebaseRecyclerAdapter<DataBase, SelectModeActivity.MessageViewHolder> mFirebaseAdapter;
+
+    // Firebase instance variables
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseUser mFirebaseUser;
+
+    private String mUsername;
+    private String mPhotoUrl;
+
     private ModeTextView modeTextViewTraining;
     private ImageView imageViewStart;
     private ImageView imageViewPast;
@@ -51,7 +86,8 @@ public class TrainingActivity extends AppCompatActivity {
     private List<String> origin = new ArrayList<>();
     private TrainingThread trainingThread;
     private boolean change = false;
-    public String htmlText;
+    public String st;
+    public String str;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +107,80 @@ public class TrainingActivity extends AppCompatActivity {
         modeTextViewTraining.setVisibility(View.INVISIBLE);
 
 //        Log.d(TAG, "onCreate()");
+        // Initialize Firebase Auth
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseUser = mFirebaseAuth.getCurrentUser();
+        if (mFirebaseUser == null) {
+            // Not signed in, launch the Sign In activity
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        } else {
+            mUsername = mFirebaseUser.getDisplayName();
+            if (mFirebaseUser.getPhotoUrl() != null) {
+                mPhotoUrl = mFirebaseUser.getPhotoUrl().toString();
+            }
+        }
+
+        // New child entries
+        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        mFirebaseAdapter = new FirebaseRecyclerAdapter<DataBase, SelectModeActivity.MessageViewHolder>(
+                DataBase.class,
+                R.layout.item_message,
+                SelectModeActivity.MessageViewHolder.class,
+                mFirebaseDatabaseReference.child(MESSAGES_CHILD)) {
+
+
+            @Override
+            protected DataBase parseSnapshot(DataSnapshot snapshot) {
+                DataBase DataBase = super.parseSnapshot(snapshot);
+                if (DataBase != null) {
+                    DataBase.setId(snapshot.getKey());
+                }
+                return DataBase;
+            }
+
+
+            @Override
+            protected void populateViewHolder(SelectModeActivity.MessageViewHolder viewHolder,
+                                              DataBase DataBase, int position) {
+                viewHolder.messageTextView.setText(DataBase.getText());
+                viewHolder.messengerTextView.setText(DataBase.getName());
+
+                // write this message to the on-device index
+                FirebaseAppIndex.getInstance().update(getMessageIndexable(DataBase));
+
+                // log a view action on it
+                FirebaseUserActions.getInstance().end(getMessageViewAction(DataBase));
+            }
+        };
+    }
+
+    private Action getMessageViewAction(DataBase OpenDoorMessage) {
+        return new Action.Builder(Action.Builder.VIEW_ACTION)
+                .setObject(OpenDoorMessage.getName(), MESSAGE_URL.concat(OpenDoorMessage.getId()))
+                .setMetadata(new Action.Metadata.Builder().setUpload(false))
+                .build();
+    }
+
+    private Indexable getMessageIndexable(DataBase OpenDoorMessage) {
+        PersonBuilder sender = Indexables.personBuilder()
+                .setIsSelf(mUsername == OpenDoorMessage.getName())
+                .setName(OpenDoorMessage.getName())
+                .setUrl(MESSAGE_URL.concat(OpenDoorMessage.getId() + "/sender"));
+
+        PersonBuilder recipient = Indexables.personBuilder()
+                .setName(mUsername)
+                .setUrl(MESSAGE_URL.concat(OpenDoorMessage.getId() + "/recipient"));
+
+        Indexable messageToIndex = Indexables.messageBuilder()
+                .setName(OpenDoorMessage.getText())
+                .setUrl(MESSAGE_URL.concat(OpenDoorMessage.getId()))
+                .setSender(sender)
+                .setRecipient(recipient)
+                .build();
+
+        return messageToIndex;
     }
 
     @Override
@@ -120,15 +230,26 @@ public class TrainingActivity extends AppCompatActivity {
 
                 fileInputStream.close();
 
-                String str = "";
+                str = "";
                 for (int i = 0; i < replace.size(); i++) {
                     str += replace.get(i);
                 }
                 modeTextViewTraining.setText(str);
+
+                long time = System.currentTimeMillis();
+                SimpleDateFormat dayTime = new SimpleDateFormat("yyyy/MM/DD hh:mm:ss");
+                String str2 = dayTime.format(new Date(time));
+
+                DataBase dataBase = new DataBase(str, mUsername,str2);
+                mFirebaseDatabaseReference.child(MESSAGES_CHILD).push().setValue(dataBase);
             }
 //            Log.d(TAG, "onResume()");
             num = 100;
             handler.sendEmptyMessage(1);
+//            DataBase database = new DataBase(strItem,mUsername,mPhotoUrl);
+//            mFirebaseDatabaseReference.child(MESSAGES_CHILD)
+//                    .push().setValue(database);
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -150,6 +271,10 @@ public class TrainingActivity extends AppCompatActivity {
             if (threadStart) {
                 trainingThread.restart();
             } else {
+                st="";
+                for (int i = 0; i < Max; i++) {
+                    st += " ";
+                }
                 trainingThread.start();
             }
         } else {
@@ -309,9 +434,8 @@ public class TrainingActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 0:
-                    String st="                          ";
-                    if(replaceTextView.contains(st)){
-                        replaceTextView=replaceTextView.replaceAll(st,"");
+                    if (replaceTextView.contains(st)) {
+                        replaceTextView = replaceTextView.replaceAll(st, "");
 //                        startPosition=currentPosition;
                     }
                     modeTextViewTraining.setText(replaceTextView);
@@ -361,5 +485,25 @@ public class TrainingActivity extends AppCompatActivity {
             trainingThread.interrupt();
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.sign_out_menu:
+                mFirebaseAuth.signOut();
+                mUsername = ANONYMOUS;
+                startActivity(new Intent(this, LoginActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

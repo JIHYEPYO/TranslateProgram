@@ -9,6 +9,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.pyojihye.translateprogram.Movement.Const.Max;
+
 public class ModeTextView extends TextView {
     private int mAvailableWidth = 0;
     private Paint mPaint;
@@ -33,7 +35,7 @@ public class ModeTextView extends TextView {
         if (textWidth > 0) {
             // 값 세팅
             mAvailableWidth = textWidth - this.getPaddingLeft() - this.getPaddingRight();
-
+            Max=mPaint.breakText(text, true, mAvailableWidth, null);;
             mCutStr.clear();
             int end = 0;
             boolean exit=false;

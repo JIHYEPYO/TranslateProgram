@@ -45,15 +45,15 @@
         android:gravity="center"
         android:layout_marginBottom="40dp"/>
 
-    <Button
-        android:text="Login"
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/sign_in_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="36dp"
-        android:id="@+id/ButtonLogin"
-        android:background="@drawable/common_plus_signin_btn_text_light"
+        android:visibility="visible"
+        android:layout_gravity="center"
         android:layout_above="@+id/imageView"
         android:layout_alignLeft="@+id/imageViewLogoIcon"
-        android:layout_alignStart="@+id/imageViewLogoIcon" />
+        android:layout_alignStart="@+id/imageViewLogoIcon"
+        android:layout_marginBottom="43dp" />
 
 </RelativeLayout>

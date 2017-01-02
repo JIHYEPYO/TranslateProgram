@@ -1,27 +1,27 @@
 {
   "project_info": {
-    "project_number": "433908931004",
-    "firebase_url": "https://translateprogram-f8ab9.firebaseio.com",
-    "project_id": "translateprogram-f8ab9",
-    "storage_bucket": "translateprogram-f8ab9.appspot.com"
+    "project_number": "36080548795",
+    "firebase_url": "https://translateprogram-e53b4.firebaseio.com",
+    "project_id": "translateprogram-e53b4",
+    "storage_bucket": "translateprogram-e53b4.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:433908931004:android:4bc2f380c23e1563",
+        "mobilesdk_app_id": "1:36080548795:android:4bc2f380c23e1563",
         "android_client_info": {
           "package_name": "com.example.pyojihye.translateprogram"
         }
       },
       "oauth_client": [
         {
-          "client_id": "433908931004-u17thv64qq2ed6dg1j9tolc6hgjrit6q.apps.googleusercontent.com",
+          "client_id": "36080548795-m9m61a09qbiji8t54e4vvk909gkrbm4j.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCEz3aqaLuCkHOqaywasm56Kn9SGjo02gw"
+          "current_key": "AIzaSyB9W2NfsD6cl9K22CMMpbn6-XQjtGiAOHk"
         }
       ],
       "services": {
