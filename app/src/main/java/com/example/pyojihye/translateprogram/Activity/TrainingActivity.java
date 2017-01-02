@@ -10,11 +10,9 @@ import android.os.Message;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Html;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,7 +29,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.pyojihye.translateprogram.Movement.Const.*;
+import static com.example.pyojihye.translateprogram.Movement.Const.replace;
 
 public class TrainingActivity extends AppCompatActivity {
 
@@ -313,8 +311,8 @@ public class TrainingActivity extends AppCompatActivity {
                 case 0:
                     String st="                          ";
                     if(replaceTextView.contains(st)){
-                        replaceTextView=replaceTextView.replace(st,"");
-                        startPosition=currentPosition;
+                        replaceTextView=replaceTextView.replaceAll(st,"");
+//                        startPosition=currentPosition;
                     }
                     modeTextViewTraining.setText(replaceTextView);
 

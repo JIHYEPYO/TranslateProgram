@@ -24,7 +24,7 @@ public class IntroActivity extends Activity {
 
     Runnable irun = new Runnable() {
         public void run() {
-            Intent i = new Intent(IntroActivity.this, PathActivity.class);
+            Intent i = new Intent(IntroActivity.this, LoginActivity.class);
             startActivity(i);
             finish();
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);

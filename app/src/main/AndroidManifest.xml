@@ -22,6 +22,11 @@
        </activity>
 
         <activity
+            android:name=".Activity.LoginActivity"
+            android:theme="@style/AppTheme">
+        </activity>
+
+        <activity
             android:name=".Activity.PathActivity"
             android:theme="@style/AppTheme">
         </activity>
