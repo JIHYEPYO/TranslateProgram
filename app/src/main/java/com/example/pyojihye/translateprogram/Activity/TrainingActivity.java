@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.pyojihye.translateprogram.Movement.Const;
+import com.example.pyojihye.translateprogram.Movement.DataBase;
 import com.example.pyojihye.translateprogram.Movement.ModeTextView;
 import com.example.pyojihye.translateprogram.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -49,7 +50,6 @@ import java.util.List;
 import static com.example.pyojihye.translateprogram.Movement.Const.MESSAGE_URL;
 import static com.example.pyojihye.translateprogram.Movement.Const.Max;
 import static com.example.pyojihye.translateprogram.Movement.Const.replace;
-import static com.example.pyojihye.translateprogram.Movement.Const.strItem;
 
 public class TrainingActivity extends AppCompatActivity {
 
@@ -105,6 +105,8 @@ public class TrainingActivity extends AppCompatActivity {
         imageViewStart.setImageResource(R.drawable.start);
         numberPercent = (TextView) findViewById(R.id.numberPercent);
         modeTextViewTraining.setVisibility(View.INVISIBLE);
+
+        trainingThread = new TrainingThread();
 
 //        Log.d(TAG, "onCreate()");
         // Initialize Firebase Auth
@@ -267,14 +269,9 @@ public class TrainingActivity extends AppCompatActivity {
             imageViewFuture.setImageResource(0);
             imageViewPast.setClickable(false);
             imageViewFuture.setClickable(false);
-            trainingThread = new TrainingThread();
             if (threadStart) {
                 trainingThread.restart();
             } else {
-                st="";
-                for (int i = 0; i < Max; i++) {
-                    st += " ";
-                }
                 trainingThread.start();
             }
         } else {
@@ -434,6 +431,12 @@ public class TrainingActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 0:
+
+                    st="";
+                    for (int i = 0; i < Max; i++) {
+                        st += " ";
+                    }
+
                     if (replaceTextView.contains(st)) {
                         replaceTextView = replaceTextView.replaceAll(st, "");
 //                        startPosition=currentPosition;
@@ -481,8 +484,10 @@ public class TrainingActivity extends AppCompatActivity {
 
         //'뒤로가기'키가 눌렸을때 종료여부를 묻는 다이얼로그 띄움
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-            trainingThread.pause();
-            trainingThread.interrupt();
+            if(trainingThread.isAlive()){
+                trainingThread.pause();
+                trainingThread.interrupt();
+            }
         }
         return super.onKeyDown(keyCode, event);
     }

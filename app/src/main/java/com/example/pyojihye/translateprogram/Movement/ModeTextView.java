@@ -13,7 +13,7 @@ import static com.example.pyojihye.translateprogram.Movement.Const.Max;
 
 public class ModeTextView extends TextView {
     private int mAvailableWidth = 0;
-    private Paint mPaint;
+    public Paint mPaint;
     private List<String> mCutStr = new ArrayList<String>();
 
     public ModeTextView(Context context) {
@@ -24,7 +24,7 @@ public class ModeTextView extends TextView {
         super(context, attrs);
     }
 
-    private int setTextInfo(String text, int textWidth, int textHeight) {
+    public int setTextInfo(String text, int textWidth, int textHeight) {
         // 그릴 페인트 세팅
         mPaint = getPaint();
         mPaint.setColor(getTextColors().getDefaultColor());
@@ -35,7 +35,7 @@ public class ModeTextView extends TextView {
         if (textWidth > 0) {
             // 값 세팅
             mAvailableWidth = textWidth - this.getPaddingLeft() - this.getPaddingRight();
-            Max=mPaint.breakText(text, true, mAvailableWidth, null);;
+            Max=mPaint.breakText(text, true, mAvailableWidth, null);
             mCutStr.clear();
             int end = 0;
             boolean exit=false;

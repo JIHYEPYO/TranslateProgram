@@ -39,11 +39,12 @@
         <activity
             android:name=".Activity.TrainingOptionActivity"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="adjustPan">
         </activity>
 
         <activity
             android:name=".Activity.TrainingActivity"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme">
         </activity>
 
@@ -55,7 +56,7 @@
         <activity
             android:name=".Activity.ViewerOptionActivity"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="adjustPan">
         </activity>
 
     </application>

@@ -15,7 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.example.pyojihye.translateprogram.Activity.DataBase;
+import com.example.pyojihye.translateprogram.Movement.DataBase;
 import com.example.pyojihye.translateprogram.Activity.SelectModeActivity;
 import com.example.pyojihye.translateprogram.Activity.ViewerActivity;
 import com.example.pyojihye.translateprogram.Movement.Const;

@@ -10,6 +10,27 @@
     tools:context=".Activity.IntroActivity"
     android:background="@color/colorPrimary">
 
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:id="@+id/imageView"
+        android:background="@drawable/ic_ncs_logo"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:layout_marginBottom="15dp"/>
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/imageViewLogoIcon"
+        android:background="@mipmap/ic_launcher"
+        android:gravity="center|top"
+
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="31dp" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,28 +42,7 @@
         android:gravity="center"
         android:textColor="@color/colorAccent"
         android:textStyle="bold"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="150dp" />
-
-    <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:id="@+id/imageViewLogoIcon"
-        android:background="@mipmap/ic_launcher"
-        android:gravity="center"
-        android:layout_alignBottom="@+id/textView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="41dp" />
-
-    <ImageView
-        android:layout_width="150dp"
-        android:layout_height="40dp"
-        android:id="@+id/imageView"
-        android:background="@drawable/ic_ncs_logo"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:gravity="center"
-        android:layout_marginBottom="40dp"/>
+        android:layout_below="@+id/imageViewLogoIcon"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

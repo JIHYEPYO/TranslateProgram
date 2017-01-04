@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.pyojihye.translateprogram.Movement.Const;
+import com.example.pyojihye.translateprogram.Movement.DataBase;
 import com.example.pyojihye.translateprogram.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.appindexing.Action;

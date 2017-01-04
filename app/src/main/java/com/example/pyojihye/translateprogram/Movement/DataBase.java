@@ -1,4 +1,4 @@
-package com.example.pyojihye.translateprogram.Activity;
+package com.example.pyojihye.translateprogram.Movement;
 
 import java.util.Date;
 
