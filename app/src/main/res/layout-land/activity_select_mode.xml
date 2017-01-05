@@ -1,59 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<LinearLayout 
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:sl="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
+    android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center">
 
     <com.ssomai.android.scalablelayout.ScalableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        sl:scale_base_height="20"
-        sl:scale_base_width="40">
+        android:layout_gravity="center"
+        sl:scale_base_height="48"
+        sl:scale_base_width="100">
+
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/journal"
             android:onClick="onImageTrainingClick"
-            sl:scale_width="15"
-            sl:scale_height="15"
-            sl:scale_left="2"/>
+            sl:scale_width="35"
+            sl:scale_height="35"
+            sl:scale_top="5"
+            sl:scale_left="10"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Training Mode"
-            android:onClick="onImageTrainingClick"
             android:id="@+id/textViewTrainingMode"
-            sl:scale_textsize="3"
-            sl:scale_width="20"
-            sl:scale_height="4"
-            sl:scale_top="16"
-            sl:scale_left="0.5"/>
+            android:onClick="onImageTrainingClick"
+            sl:scale_textsize="6"
+            sl:scale_top="41"
+            sl:scale_width="40"
+            sl:scale_height="9"
+            sl:scale_left="8"/>
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/binoculars"
+            android:layout_margin="10dp"
+            android:layout_gravity="center"
             android:onClick="onImageViewerClick"
-            sl:scale_width="15"
-            sl:scale_height="15"
-            sl:scale_left="23"/>
+            sl:scale_width="35"
+            sl:scale_height="35"
+            sl:scale_top="5"
+            sl:scale_left="60"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Viewer Mode"
+            android:textSize="25dp"
             android:id="@+id/textViewViewerMode"
+            android:layout_gravity="center"
             android:onClick="onImageViewerClick"
-            sl:scale_textsize="3"
-            sl:scale_width="18"
-            sl:scale_height="4"
-            sl:scale_top="16"
-            sl:scale_left="22"/>
+            sl:scale_textsize="6"
+            sl:scale_top="41"
+            sl:scale_width="38"
+            sl:scale_height="8"
+            sl:scale_left="60"/>
 
     </com.ssomai.android.scalablelayout.ScalableLayout>
 </LinearLayout>
