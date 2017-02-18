@@ -14,17 +14,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         sl:scale_base_width="200"
-        sl:scale_base_height="300">
+        sl:scale_base_height="320">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/imageViewLogoIcon"
-            android:background="@mipmap/ic_launcher"
-            sl:scale_width="50"
-            sl:scale_height="50"
+            android:background="@drawable/icon"
+            sl:scale_width="40"
+            sl:scale_height="40"
             sl:scale_left="80"
-            sl:scale_top="20"/>
+            sl:scale_top="30"/>
+
 
         <TextView
             android:layout_width="wrap_content"
@@ -37,7 +38,7 @@
             sl:scale_textsize="15"
             sl:scale_height="20"
             sl:scale_width="150"
-            sl:scale_left="48"
+            sl:scale_left="40"
             sl:scale_top="70"
             sl:textview_wrapcontent_direction="bottom"
             sl:textview_wrapcontent_resizesurrounded="true"
@@ -48,10 +49,10 @@
             android:layout_height="wrap_content"
             android:id="@+id/imageView"
             android:background="@drawable/ic_ncs_logo"
-            sl:scale_width="60"
+            sl:scale_width="80"
             sl:scale_height="20"
             sl:scale_top="270"
-            sl:scale_left="75"/>
+            sl:scale_left="65"/>
 
     </com.ssomai.android.scalablelayout.ScalableLayout>
 </LinearLayout>

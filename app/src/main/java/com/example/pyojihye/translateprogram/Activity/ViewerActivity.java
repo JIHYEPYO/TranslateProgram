@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.Window;
 import android.widget.TextView;
 
 import com.example.pyojihye.translateprogram.Movement.Const;
@@ -64,7 +65,7 @@ public class ViewerActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate()");
-
+        requestWindowFeature(R.style.AppTheme);
         setTitle("Viewer Mode");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_viewer_mode);
@@ -174,9 +175,9 @@ public class ViewerActivity extends Activity {
                 DataBase dataBase = new DataBase(buf.toString(), mUsername, str2);
                 mFirebaseDatabaseReference.child(MESSAGES_CHILD).push().setValue(dataBase);
 
-                //delete와 word 배열에 값 할당
-                int point = 0;
-                for (int i = 0; i < buf.length(); i++) {
+                //word 배열에 값 할당
+                int point = 1;
+                for (int i = 1; i < buf.length(); i++) {
                     if (buf.charAt(i) == ' ' || buf.charAt(i) == '\n') {
                         word.add(buf.substring(point, i + 1));
                         point = i + 1;
@@ -234,7 +235,7 @@ public class ViewerActivity extends Activity {
                 for (String s : word) {
                     str += s;
                 }
-                textViewViewer.setText(str);
+                textViewViewer.setText(str+"\n\n\n");
             }
             Log.v("TextView : ", textViewViewer.getText().toString());
             Log.d(TAG, "onResume()");
@@ -260,6 +261,10 @@ public class ViewerActivity extends Activity {
                 mFirebaseAuth.signOut();
                 mUsername = ANONYMOUS;
                 startActivity(new Intent(this, LoginActivity.class));
+                return true;
+            case R.id.developer:
+                Intent intent = new Intent(getApplicationContext(), DeveloperActivity.class);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

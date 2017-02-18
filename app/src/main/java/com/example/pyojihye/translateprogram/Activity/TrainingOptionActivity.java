@@ -32,6 +32,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static com.example.pyojihye.translateprogram.Movement.Const.MESSAGE_URL;
+import static com.example.pyojihye.translateprogram.Movement.Const.screen;
 import static com.example.pyojihye.translateprogram.Movement.Const.wpm;
 
 public class TrainingOptionActivity extends AppCompatActivity {
@@ -61,6 +62,8 @@ public class TrainingOptionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_training_mode_option);
 
         editTextWPM = (EditText) findViewById(R.id.editTextWPM);
+
+        screen = false;
 
         // Initialize Firebase Auth
         mFirebaseAuth = FirebaseAuth.getInstance();
@@ -159,6 +162,12 @@ public class TrainingOptionActivity extends AppCompatActivity {
             TextView textView = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
             textView.setTextColor(Color.WHITE);
             snackbar.show();
+        } else if (Integer.parseInt(editTextWPM.getText().toString()) > 500) {
+            Snackbar snackbar = Snackbar.make(findViewById(R.id.editTextWPM), R.string.snack_bar_wpm_plus, Snackbar.LENGTH_LONG);
+            View view = snackbar.getView();
+            TextView textView = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+            textView.setTextColor(Color.WHITE);
+            snackbar.show();
         } else {
             wpm = Integer.parseInt(editTextWPM.getText().toString());
             long time = System.currentTimeMillis();
@@ -186,6 +195,10 @@ public class TrainingOptionActivity extends AppCompatActivity {
                 mFirebaseAuth.signOut();
                 mUsername = ANONYMOUS;
                 startActivity(new Intent(this, LoginActivity.class));
+                return true;
+            case R.id.developer:
+                Intent intent = new Intent(getApplicationContext(), DeveloperActivity.class);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -209,7 +209,7 @@ public class PathActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 //최초 거부를 선택하면 두번째부터 이벤트 발생 & 권한 획득이 필요한 이유를 설명
                 if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                    Toast.makeText(this, "shouldShowRequestPermissionRationale", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "자신이 원하는 파일을 이용하여 통번역 훈련을 하기 위해서는 반드시 이 권한이 필요합니다.", Toast.LENGTH_SHORT).show();
                 }
 
                 //요청 팝업 팝업 선택시 onRequestPermissionsResult 이동
@@ -308,7 +308,7 @@ public class PathActivity extends AppCompatActivity implements AdapterView.OnIte
 
         if (strItem.endsWith("txt")) {
             long time = System.currentTimeMillis();
-            SimpleDateFormat dayTime = new SimpleDateFormat("yyyy/mm/dd hh:mm:ss");
+            SimpleDateFormat dayTime = new SimpleDateFormat("yyyy/MM/DD hh:mm:ss");
             String str = dayTime.format(new Date(time));
 
             DataBase dataBase = new DataBase(strItem, strPath, mUsername, str);
@@ -351,6 +351,10 @@ public class PathActivity extends AppCompatActivity implements AdapterView.OnIte
                 mFirebaseAuth.signOut();
                 mUsername = ANONYMOUS;
                 startActivity(new Intent(this, LoginActivity.class));
+                return true;
+            case R.id.developer:
+                Intent intent = new Intent(getApplicationContext(), DeveloperActivity.class);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -1,13 +1,20 @@
 package com.example.pyojihye.translateprogram.Activity;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Window;
+import android.widget.Toast;
 
+import com.example.pyojihye.translateprogram.Movement.Const;
 import com.example.pyojihye.translateprogram.R;
+
+import static com.example.pyojihye.translateprogram.Movement.Const.start;
 
 public class IntroActivity extends Activity {
     private final String TAG = "IntroActivity";
@@ -17,25 +24,58 @@ public class IntroActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_intro);
-        h = new Handler();
-        h.postDelayed(irun, 2000);
-        Log.d(TAG, "onCreate()");
-    }
 
-    Runnable irun = new Runnable() {
-        public void run() {
-            Intent i = new Intent(IntroActivity.this, LoginActivity.class);
-            startActivity(i);
-            finish();
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-            Log.d(TAG, "Runnable()");
+        if (start) {
+            AlertDialog.Builder d = new AlertDialog.Builder(this);
+            d.setTitle(getString(R.string.dialog_title_log));
+            d.setMessage(getString(R.string.dialog_contents_log));
+            d.setIcon(R.mipmap.ic_launcher);
+
+            d.setPositiveButton(getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // TODO Auto-generated method stub
+                    h = new Handler();
+                    h.postDelayed(irun, 2000);
+                    Log.d(TAG, "onCreate()");
+
+                    start = false;
+                }
+
+                Runnable irun = new Runnable() {
+                    public void run() {
+                        Intent i = new Intent(IntroActivity.this, LoginActivity.class);
+                        startActivity(i);
+                        finish();
+                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                        Log.d(TAG, "Runnable()");
+                    }
+                };
+            });
+
+            d.setNegativeButton(getString(R.string.dialog_no), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // TODO Auto-generated method stub
+                    dialog.cancel();
+                    finish();
+                }
+            });
+            d.show();
+        } else {
+
+            Runnable irun = new Runnable() {
+                public void run() {
+                    Intent i = new Intent(IntroActivity.this, LoginActivity.class);
+                    startActivity(i);
+                    finish();
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                    Log.d(TAG, "Runnable()");
+                }
+            };
+
+            h = new Handler();
+            h.postDelayed(irun, 2000);
         }
-    };
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        h.removeCallbacks(irun);
-        Log.d(TAG, "onBackPressed()");
     }
 }

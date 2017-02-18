@@ -35,10 +35,9 @@ public class LoginActivity extends AppCompatActivity implements
 
     private SignInButton mSignInButton;
 
-    private GoogleApiClient mGoogleApiClient;
-
     // Firebase instance variables
     private FirebaseAuth mFirebaseAuth;
+    private GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +82,7 @@ public class LoginActivity extends AppCompatActivity implements
     }
 
     private void signIn() {
+        Log.d(TAG, "signIn()");
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -95,6 +95,7 @@ public class LoginActivity extends AppCompatActivity implements
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (result.isSuccess()) {
+                Log.d(TAG, "onActivityResult()");
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = result.getSignInAccount();
                 firebaseAuthWithGoogle(account);

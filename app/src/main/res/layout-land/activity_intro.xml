@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/imageViewLogoIcon"
-            android:background="@mipmap/ic_launcher"
+            android:background="@drawable/icon"
             sl:scale_width="70"
             sl:scale_height="70"
             sl:scale_left="180"/>
@@ -36,7 +36,7 @@
             sl:scale_height="35"
             sl:scale_width="220"
             sl:scale_left="110"
-            sl:scale_top="60"
+            sl:scale_top="70"
             sl:textview_wrapcontent_direction="bottom"
             sl:textview_wrapcontent_resizesurrounded="true"
             sl:textview_wrapcontent_movesiblings="true"/>

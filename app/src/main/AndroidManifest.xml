@@ -59,5 +59,10 @@
             android:windowSoftInputMode="adjustPan">
         </activity>
 
+        <activity
+            android:name=".Activity.DeveloperActivity"
+            android:theme="@style/AppTheme">
+        </activity>
+
     </application>
 </manifest>

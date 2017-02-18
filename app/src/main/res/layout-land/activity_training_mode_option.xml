@@ -8,8 +8,8 @@
     <com.ssomai.android.scalablelayout.ScalableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        sl:scale_base_width="200"
-        sl:scale_base_height="268">
+        sl:scale_base_width="420"
+        sl:scale_base_height="200">
 
         <TextView
             android:layout_width="wrap_content"
@@ -17,8 +17,8 @@
             android:text="WPM :"
             sl:scale_width="50"
             sl:scale_height="25"
-            sl:scale_top="102"
-            sl:scale_left="10"
+            sl:scale_top="82"
+            sl:scale_left="90"
             sl:scale_textsize="15"/>
 
         <EditText
@@ -31,9 +31,9 @@
             android:background="@color/colorGray"
             android:hint="number"
             sl:scale_textsize="20"
-            sl:scale_left="60"
-            sl:scale_top="100"
-            sl:scale_width="130"
+            sl:scale_left="140"
+            sl:scale_top="80"
+            sl:scale_width="200"
             sl:scale_height="30"/>
 
         <Button
@@ -47,8 +47,8 @@
             sl:scale_textsize="13"
             sl:scale_width="70"
             sl:scale_height="25"
-            sl:scale_top="240"
-            sl:scale_left="70"/>
+            sl:scale_top="170"
+            sl:scale_left="195"/>
 
     </com.ssomai.android.scalablelayout.ScalableLayout>
 </LinearLayout>

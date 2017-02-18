@@ -1,12 +1,18 @@
 package com.example.pyojihye.translateprogram.Activity;
 
+import android.app.ActivityManager;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PowerManager;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -46,17 +53,18 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static com.example.pyojihye.translateprogram.Movement.Const.MESSAGE_URL;
 import static com.example.pyojihye.translateprogram.Movement.Const.Max;
 import static com.example.pyojihye.translateprogram.Movement.Const.replace;
+import static com.example.pyojihye.translateprogram.Movement.Const.screen;
 
 public class TrainingActivity extends AppCompatActivity {
 
     private final String TAG = "TrainingActivity";
     private final String ANONYMOUS = "ANONYMOUS";
     private final String MESSAGES_CHILD = "Training";
-
 
     // Firebase instance variables
     private DatabaseReference mFirebaseDatabaseReference;
@@ -88,74 +96,79 @@ public class TrainingActivity extends AppCompatActivity {
     private boolean change = false;
     public String st;
     public String str;
+    private int position;
+    private View view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate()");
-        setTitle("Training Mode");
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_training_mode);
+        if (!screen) {
+            setTitle("Training Mode");
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_training_mode);
 
-        modeTextViewTraining = (ModeTextView) findViewById(R.id.ModeTextViewTraining);
-        Typeface face = Typeface.createFromAsset(getAssets(), "D2Coding.ttc");
-        modeTextViewTraining.setTypeface(face);
-        imageViewStart = (ImageView) findViewById(R.id.imageViewStart);
-        imageViewPast = (ImageView) findViewById(R.id.imageViewPast);
-        imageViewFuture = (ImageView) findViewById(R.id.imageViewFuture);
-        imageViewStart.setImageResource(R.drawable.start);
-        numberPercent = (TextView) findViewById(R.id.numberPercent);
-        modeTextViewTraining.setVisibility(View.INVISIBLE);
+//            view=(View)findViewById(R.id.imageView);
+            modeTextViewTraining = (ModeTextView) findViewById(R.id.ModeTextViewTraining);
+            Typeface face = Typeface.createFromAsset(getAssets(), "D2Coding.ttc");
+            modeTextViewTraining.setTypeface(face);
+            imageViewStart = (ImageView) findViewById(R.id.imageViewStart);
+            imageViewPast = (ImageView) findViewById(R.id.imageViewPast);
+            imageViewFuture = (ImageView) findViewById(R.id.imageViewFuture);
+            imageViewStart.setImageResource(R.drawable.start);
+            numberPercent = (TextView) findViewById(R.id.numberPercent);
+            modeTextViewTraining.setVisibility(View.INVISIBLE);
 
-        trainingThread = new TrainingThread();
+            trainingThread = new TrainingThread();
 
 //        Log.d(TAG, "onCreate()");
-        // Initialize Firebase Auth
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        mFirebaseUser = mFirebaseAuth.getCurrentUser();
-        if (mFirebaseUser == null) {
-            // Not signed in, launch the Sign In activity
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
-            return;
-        } else {
-            mUsername = mFirebaseUser.getDisplayName();
-            if (mFirebaseUser.getPhotoUrl() != null) {
-                mPhotoUrl = mFirebaseUser.getPhotoUrl().toString();
-            }
-        }
-
-        // New child entries
-        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-        mFirebaseAdapter = new FirebaseRecyclerAdapter<DataBase, SelectModeActivity.MessageViewHolder>(
-                DataBase.class,
-                R.layout.item_message,
-                SelectModeActivity.MessageViewHolder.class,
-                mFirebaseDatabaseReference.child(MESSAGES_CHILD)) {
-
-
-            @Override
-            protected DataBase parseSnapshot(DataSnapshot snapshot) {
-                DataBase DataBase = super.parseSnapshot(snapshot);
-                if (DataBase != null) {
-                    DataBase.setId(snapshot.getKey());
+            // Initialize Firebase Auth
+            mFirebaseAuth = FirebaseAuth.getInstance();
+            mFirebaseUser = mFirebaseAuth.getCurrentUser();
+            if (mFirebaseUser == null) {
+                // Not signed in, launch the Sign In activity
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
+                return;
+            } else {
+                mUsername = mFirebaseUser.getDisplayName();
+                if (mFirebaseUser.getPhotoUrl() != null) {
+                    mPhotoUrl = mFirebaseUser.getPhotoUrl().toString();
                 }
-                return DataBase;
             }
 
+            // New child entries
+            mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+            mFirebaseAdapter = new FirebaseRecyclerAdapter<DataBase, SelectModeActivity.MessageViewHolder>(
+                    DataBase.class,
+                    R.layout.item_message,
+                    SelectModeActivity.MessageViewHolder.class,
+                    mFirebaseDatabaseReference.child(MESSAGES_CHILD)) {
 
-            @Override
-            protected void populateViewHolder(SelectModeActivity.MessageViewHolder viewHolder,
-                                              DataBase DataBase, int position) {
-                viewHolder.messageTextView.setText(DataBase.getText());
-                viewHolder.messengerTextView.setText(DataBase.getName());
 
-                // write this message to the on-device index
-                FirebaseAppIndex.getInstance().update(getMessageIndexable(DataBase));
+                @Override
+                protected DataBase parseSnapshot(DataSnapshot snapshot) {
+                    DataBase DataBase = super.parseSnapshot(snapshot);
+                    if (DataBase != null) {
+                        DataBase.setId(snapshot.getKey());
+                    }
+                    return DataBase;
+                }
 
-                // log a view action on it
-                FirebaseUserActions.getInstance().end(getMessageViewAction(DataBase));
-            }
-        };
+
+                @Override
+                protected void populateViewHolder(SelectModeActivity.MessageViewHolder viewHolder,
+                                                  DataBase DataBase, int position) {
+                    viewHolder.messageTextView.setText(DataBase.getText());
+                    viewHolder.messengerTextView.setText(DataBase.getName());
+
+                    // write this message to the on-device index
+                    FirebaseAppIndex.getInstance().update(getMessageIndexable(DataBase));
+
+                    // log a view action on it
+                    FirebaseUserActions.getInstance().end(getMessageViewAction(DataBase));
+                }
+            };
+        }
     }
 
     private Action getMessageViewAction(DataBase OpenDoorMessage) {
@@ -189,78 +202,91 @@ public class TrainingActivity extends AppCompatActivity {
     protected void onResume() {
 //        Log.d(TAG, "onResume()");
         super.onResume();
-        replace.clear();
-        BufferedReader bufferedReader = null;
-        FileInputStream fileInputStream;
-        String strPath = null;
+        if (!screen) {
+            replace.clear();
+            BufferedReader bufferedReader = null;
+            FileInputStream fileInputStream;
+            String strPath = null;
 
-        imageViewStart.setImageResource(R.drawable.start);
-        modeTextViewTraining.setVisibility(View.INVISIBLE);
-        imageViewPast.setImageResource(0);
-        imageViewFuture.setImageResource(0);
-        imageViewPast.setClickable(false);
-        imageViewFuture.setClickable(false);
+            imageViewStart.setImageResource(R.drawable.start);
+            modeTextViewTraining.setVisibility(View.INVISIBLE);
+            imageViewPast.setImageResource(0);
+            imageViewFuture.setImageResource(0);
+            imageViewPast.setClickable(false);
+            imageViewFuture.setClickable(false);
 
-        try {
-            File path = new File(Const.strPath);
-            fileInputStream = new FileInputStream(path);
+            try {
+                File path = new File(Const.strPath);
+                fileInputStream = new FileInputStream(path);
 
-            if (fileInputStream != null) {
-                bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
-                StringBuffer buf = new StringBuffer();
+                if (fileInputStream != null) {
+                    bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
+                    StringBuffer buf = new StringBuffer();
 
-                while ((strPath = bufferedReader.readLine()) != null) {
-                    buf.append(strPath + '\n');
-                }
-
-                int point = 0;
-                for (int i = 0; i < buf.length(); i++) {
-                    if (buf.charAt(i) == ' ') {
-                        replace.add(buf.substring(point, i + 1));
-                        origin.add(buf.substring(point, i + 1));
-                        point = i + 1;
+                    while ((strPath = bufferedReader.readLine()) != null) {
+                        buf.append(strPath + '\n');
                     }
-                    if (buf.charAt(i) == '\n') {
-                        replace.add(buf.substring(point, i));
-                        replace.set(replace.size() - 1, replace.get(replace.size() - 1) + "\n");
 
-                        origin.add(buf.substring(point, i));
-                        origin.set(replace.size() - 1, origin.get(origin.size() - 1) + "\n");
-                        point = i + 1;
+                    int point = 1;
+                    for (int i = 1; i < buf.length(); i++) {
+                        if (buf.charAt(i) == ' ') {
+                            replace.add(buf.substring(point, i + 1));
+                            origin.add(buf.substring(point, i + 1));
+                            point = i + 1;
+                        }
+                        if (buf.charAt(i) == '\n') {
+                            replace.add(buf.substring(point, i));
+                            replace.set(replace.size() - 1, replace.get(replace.size() - 1) + "\n");
+
+                            origin.add(buf.substring(point, i));
+                            origin.set(replace.size() - 1, origin.get(origin.size() - 1) + "\n");
+                            point = i + 1;
+                        }
                     }
+
+                    fileInputStream.close();
+
+                    str = "";
+                    int size = 0;
+
+                    if (replace.size() / 150 >= 1) {
+                        size = 150;
+                    } else {
+                        size = replace.size();
+                    }
+
+                    for (int i = 0; i < size; i++) {
+                        str += replace.get(i);
+                    }
+                    modeTextViewTraining.setText(str);
+
+
+                    long time = System.currentTimeMillis();
+                    SimpleDateFormat dayTime = new SimpleDateFormat("yyyy/MM/DD hh:mm:ss");
+                    String str2 = dayTime.format(new Date(time));
+
+                    DataBase dataBase = new DataBase(buf.toString(), mUsername, str2);
+                    mFirebaseDatabaseReference.child(MESSAGES_CHILD).push().setValue(dataBase);
                 }
-
-                fileInputStream.close();
-
-                str = "";
-                for (int i = 0; i < replace.size(); i++) {
-                    str += replace.get(i);
-                }
-                modeTextViewTraining.setText(str);
-
-                long time = System.currentTimeMillis();
-                SimpleDateFormat dayTime = new SimpleDateFormat("yyyy/MM/DD hh:mm:ss");
-                String str2 = dayTime.format(new Date(time));
-
-                DataBase dataBase = new DataBase(str, mUsername,str2);
-                mFirebaseDatabaseReference.child(MESSAGES_CHILD).push().setValue(dataBase);
-            }
 //            Log.d(TAG, "onResume()");
-            num = 100;
-            handler.sendEmptyMessage(1);
+                num = 100;
+                handler.sendEmptyMessage(1);
 //            DataBase database = new DataBase(strItem,mUsername,mPhotoUrl);
 //            mFirebaseDatabaseReference.child(MESSAGES_CHILD)
 //                    .push().setValue(database);
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
         }
     }
 
     public void onStartClick(View v) {
 //        Log.d(TAG, "onStartClick()");
+//        view = v;
         if (!startChange) {
             modeTextViewTraining.setVisibility(View.VISIBLE);
             startChange = true;
@@ -287,22 +313,37 @@ public class TrainingActivity extends AppCompatActivity {
 
     public void onPastClick(View v) {
 //        Log.d(TAG, "onPastClick()");
-        int position;
 
         if (currentPosition != 0) {
             if (!change) {
+                change = false;
                 replace.set(currentPosition - 1, origin.get(currentPosition - 1));
             } else {
-                startPosition = currentPosition - 1;
-                replace.set(currentPosition - 1, origin.get(currentPosition - 1));
+                String st = "";
+                for (int i = 0; i < currentPosition - 1; i++) {
+                    st += replace.get(i);
+                }
+                if (st.contains("\n")) {
+                    startPosition = currentPosition - 1;
+                    replace.set(currentPosition - 1, origin.get(currentPosition - 1));
+                } else {
+                    replace.set(currentPosition - 1, origin.get(currentPosition - 1));
+                }
+            }
+
+            int start = 0;
+            for (int i = 0; i < currentPosition - 1; i++) {
+                if (replace.get(i).contains("\n")) {
+                    start = i + 1;
+                }
+            }
+
+            String str = "";
+            for (int i = start; i < position; i++) {
+                str += replace.get(i);
             }
 
             currentPosition--;
-
-            String str = "";
-            for (String s : replace) {
-                str += s;
-            }
             replaceTextView = str;
             PercentCalculate();
             handler.sendEmptyMessage(0);
@@ -328,47 +369,91 @@ public class TrainingActivity extends AppCompatActivity {
         currentPosition = 0;
         startPosition = 0;
         endPosition = replace.size();
+        position = 0;
 
-        Log.v("Word count: ", endPosition + "");
+//        Log.v("Word count: ", endPosition + "");
     }
 
     private void Training() {
-        if (currentPosition < endPosition) {
-            String text = "";
+//        //전원버튼
+//        IntentFilter offfilter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
+//        registerReceiver(screenoff, offfilter);
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 
-            String spacebar = "";
-            text = replace.get(currentPosition);
-
-            for (int i = 0; i < text.length(); i++) {
-                if (text.substring(i, text.length()).equals("\n")) {
-                    spacebar = spacebar + "\n";
-                    replace.set(currentPosition, spacebar);
-                    startPosition = currentPosition + 1;
-                    break;
+        if (currentPosition % 75 == 0) {
+            if (position == 0) {
+                if ((replace.size() - position) / 150 >= 1) {
+                    position = 150;
                 } else {
-                    spacebar = spacebar + " ";
-                    replace.set(currentPosition, spacebar);
+                    position = replace.size();
                 }
+            } else if ((replace.size() - position) / 150 >= 1) {
+                position += 150;
+
+                if (currentPosition % 150 == 0) {
+                    position -= 150;
+                }
+            } else {
+                position = replace.size();
             }
+        }
 
-            String str = "";
+        if (!pm.isScreenOn()) {
+//            onStartClick(view);
+            trainingThread.pause();
+            screen = true;
+            imageViewStart.setImageResource(R.drawable.start);
+            imageViewPast.setImageResource(R.drawable.past);
+            imageViewFuture.setImageResource(R.drawable.future);
+            imageViewPast.setClickable(true);
+            imageViewFuture.setClickable(true);
+        } else {
+            if (currentPosition < endPosition) {
+                String text = "";
 
-            for (int i = startPosition; i < endPosition; i++) {
-                str += replace.get(i);
-            }
+                String spacebar = "";
+                text = replace.get(currentPosition);
 
-            replaceTextView = str;
+                for (int i = 0; i < text.length(); i++) {
+                    if (text.substring(i, text.length()).equals("\n")) {
+                        spacebar = spacebar + "\n";
+                        replace.set(currentPosition, spacebar);
+                        startPosition = currentPosition + 1;
+                        break;
+                    } else if (Character.getType(text.toCharArray()[i]) == 5) {
+                        spacebar = spacebar + "  ";
+                        replace.set(currentPosition, spacebar);
+                    } else {
+                        spacebar = spacebar + " ";
+                        replace.set(currentPosition, spacebar);
+                    }
+                }
 
-            handler.sendEmptyMessage(0);
-            PercentCalculate();
-            currentPosition++;
+                int start = 0;
+                for (int i = 0; i < currentPosition; i++) {
+                    if (replace.get(i).contains("\n")) {
+                        start = i + 1;
+                    }
+                }
+
+                String str = "";
+                for (int i = start; i < position; i++) {
+                    str += replace.get(i);
+                }
+
+                replaceTextView = str;
+
+                handler.sendEmptyMessage(0);
+                PercentCalculate();
+                currentPosition++;
 
 //            Log.v("startPosition :", startPosition + "");
 //            Log.v("endPosition :", endPosition + "");
-        } else {
-            PercentCalculate();
-            startChange = true;
-            trainingThread.restart();
+            } else {
+                PercentCalculate();
+                startChange = true;
+                trainingThread.restart();
+            }
         }
     }
 
@@ -378,7 +463,7 @@ public class TrainingActivity extends AppCompatActivity {
             percent++;
         }
         num = 100 - (int) percent;
-        Log.v("num: ", num + "");
+//        Log.v("num: ", num + "");
         handler.sendEmptyMessage(1);
     }
 
@@ -431,8 +516,7 @@ public class TrainingActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 0:
-
-                    st="";
+                    st = "";
                     for (int i = 0; i < Max; i++) {
                         st += " ";
                     }
@@ -458,8 +542,9 @@ public class TrainingActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             // TODO Auto-generated method stub
+                            screen=false;
+                            TrainingInit();
                             onResume();
-                            threadStart = false;
                         }
                     });
 
@@ -467,8 +552,6 @@ public class TrainingActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             // TODO Auto-generated method stub
-                            Intent selectIntent = new Intent(getApplicationContext(), TrainingOptionActivity.class);
-                            startActivity(selectIntent);
                             finish();
                         }
                     });
@@ -482,11 +565,13 @@ public class TrainingActivity extends AppCompatActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         Log.d(TAG, "onKeyDown()");
 
-        //'뒤로가기'키가 눌렸을때 종료여부를 묻는 다이얼로그 띄움
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-            if(trainingThread.isAlive()){
+            if (trainingThread.isAlive()) {
                 trainingThread.pause();
                 trainingThread.interrupt();
+            }
+            if (screenoff.isOrderedBroadcast()) {
+                unregisterBroadcast();
             }
         }
         return super.onKeyDown(keyCode, event);
@@ -507,8 +592,44 @@ public class TrainingActivity extends AppCompatActivity {
                 mUsername = ANONYMOUS;
                 startActivity(new Intent(this, LoginActivity.class));
                 return true;
+            case R.id.developer:
+                Intent intent = new Intent(getApplicationContext(), DeveloperActivity.class);
+                startActivity(intent);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    //전원버튼
+    private void unregisterBroadcast() {
+        unregisterReceiver(screenoff);
+    }
+
+    BroadcastReceiver screenoff = new BroadcastReceiver() {
+        public static final String Screenoff = "android.intent.action.SCREEN_OFF";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+//            if (intent.getAction().equals(Screenoff)) {
+//                if (trainingThread.isAlive()) {
+//                    startChange = false;
+//                    change = false;
+//                    imageViewStart.setImageResource(R.drawable.start);
+//                    imageViewPast.setImageResource(R.drawable.past);
+//                    imageViewFuture.setImageResource(R.drawable.future);
+//                    imageViewPast.setClickable(true);
+//                    imageViewFuture.setClickable(true);
+//                }
+//            }
+            if (!intent.getAction().equals(Screenoff))
+                return;
+            Log.e(TAG, "Screen off!!!!!!!");
+        }
+    };
 }

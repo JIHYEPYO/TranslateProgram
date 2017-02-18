@@ -33,7 +33,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.example.pyojihye.translateprogram.Movement.Const.MESSAGE_URL;
 import static com.example.pyojihye.translateprogram.Movement.Const.delete;
-import static com.example.pyojihye.translateprogram.Movement.Const.delete_num;
 
 public class SelectModeActivity extends AppCompatActivity {
     private final String TAG = "SelectModeActivity";
@@ -159,7 +158,6 @@ public class SelectModeActivity extends AppCompatActivity {
 
     public void onImageViewerClick(View v) {
         delete.clear();
-        delete_num = 0;
 
         long time = System.currentTimeMillis();
         SimpleDateFormat dayTime = new SimpleDateFormat("yyyy/MM/DD hh:mm:ss");
@@ -187,6 +185,10 @@ public class SelectModeActivity extends AppCompatActivity {
                 mFirebaseAuth.signOut();
                 mUsername = ANONYMOUS;
                 startActivity(new Intent(this, LoginActivity.class));
+                return true;
+            case R.id.developer:
+                Intent intent = new Intent(getApplicationContext(), DeveloperActivity.class);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
