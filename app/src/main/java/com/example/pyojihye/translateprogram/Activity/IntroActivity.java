@@ -3,6 +3,7 @@ package com.example.pyojihye.translateprogram.Activity;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
@@ -14,9 +15,8 @@ import android.widget.Toast;
 import com.example.pyojihye.translateprogram.Movement.Const;
 import com.example.pyojihye.translateprogram.R;
 
-import static com.example.pyojihye.translateprogram.Movement.Const.start;
-
 public class IntroActivity extends Activity {
+    private static final String FIRSTRUN = "FirstRun";
     private final String TAG = "IntroActivity";
     Handler h;
 
@@ -25,7 +25,8 @@ public class IntroActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_intro);
 
-        if (start) {
+        final SharedPreferences settings = getSharedPreferences(FIRSTRUN, MODE_PRIVATE);
+        if (settings.getBoolean("isFirstRun", true)) {
             AlertDialog.Builder d = new AlertDialog.Builder(this);
             d.setTitle(getString(R.string.dialog_title_log));
             d.setMessage(getString(R.string.dialog_contents_log));
@@ -38,12 +39,13 @@ public class IntroActivity extends Activity {
                     h = new Handler();
                     h.postDelayed(irun, 2000);
                     Log.d(TAG, "onCreate()");
-
-                    start = false;
                 }
 
                 Runnable irun = new Runnable() {
                     public void run() {
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.putBoolean("isFirstRun", false);
+                        editor.commit();
                         Intent i = new Intent(IntroActivity.this, LoginActivity.class);
                         startActivity(i);
                         finish();

@@ -15,5 +15,4 @@ public class Const {
     public static int Max;
     public static String MESSAGE_URL = "https://translateprogram-e53b4.firebaseio.com/";
     public static boolean screen;
-    public static boolean start = true;
 }
