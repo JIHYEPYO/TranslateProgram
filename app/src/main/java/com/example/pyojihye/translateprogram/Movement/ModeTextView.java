@@ -4,7 +4,10 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.TextView;
+
+import com.example.pyojihye.translateprogram.Activity.TrainingActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +15,7 @@ import java.util.List;
 import static com.example.pyojihye.translateprogram.Movement.Const.Max;
 
 public class ModeTextView extends TextView {
+    private static String TAG = "ModeTextView";
     private int mAvailableWidth = 0;
     public Paint mPaint;
     private List<String> mCutStr = new ArrayList<String>();
@@ -25,6 +29,7 @@ public class ModeTextView extends TextView {
     }
 
     public int setTextInfo(String text, int textWidth, int textHeight) {
+        Log.d(TAG, "setTextInfo");
         // 그릴 페인트 세팅
         mPaint = getPaint();
         mPaint.setColor(getTextColors().getDefaultColor());
@@ -35,39 +40,36 @@ public class ModeTextView extends TextView {
         if (textWidth > 0) {
             // 값 세팅
             mAvailableWidth = textWidth - this.getPaddingLeft() - this.getPaddingRight();
-            Max=0;
-            for(int i=0;i<mPaint.breakText(text, true, mAvailableWidth, null);i++){
-                if(Character.getType(text.toCharArray()[i]) == 5){
-                    Max+=2;
-                }else{
+            Max = 0;
+            for (int i = 0; i < mPaint.breakText(text, true, mAvailableWidth, null); i++) {
+                if (Character.getType(text.toCharArray()[i]) == 5) {
+                    Max += 2;
+                } else {
                     Max++;
                 }
             }
             mCutStr.clear();
             int end = 0;
-            boolean exit=false;
+            boolean exit = false;
             do {
                 // 글자가 width 보다 넘어가는지 체크
                 end = mPaint.breakText(text, true, mAvailableWidth, null);
-                if (end > 0 && !text.substring(0,end).contains("\n")) {
-                    // 자른 문자열을 문자열 배열에 담아 놓는다.
+                if (end > 0 && !text.substring(0, end).contains("\n")) {
+                    //글자가 잘리는 부분
                     mCutStr.add(text.substring(0, end));
-                    // 넘어간 글자 모두 잘라 다음에 사용하도록 세팅
                     text = text.substring(end);
-                    // 다음라인 높이 지정
                     if (textHeight == 0) mTextHeight += getLineHeight();
-                }else if(text.contains("\n")){
-                    exit=false;
-                    end=text.indexOf("\n")+1;
-                    // 자른 문자열을 문자열 배열에 담아 놓는다.
+                } else if (text.contains("\n")) {
+                    //text에서 줄바꿈 할 때
+                    exit = false;
+                    end = text.indexOf("\n") + 1;
                     mCutStr.add(text.substring(0, end));
-                    // 넘어간 글자 모두 잘라 다음에 사용하도록 세팅
                     text = text.substring(end);
-                    // 다음라인 높이 지정
                     if (textHeight == 0) mTextHeight += getLineHeight();
-                }else if(text.length()==0){
-                    end=0;
-                    exit=true;
+                } else if (text.length() == 0) {
+                    //text의 맨 마지막 부분
+                    end = 0;
+                    exit = true;
                 }
             } while (end > 0 && !exit);
         }
@@ -78,6 +80,7 @@ public class ModeTextView extends TextView {
     @Override
     protected void onDraw(Canvas canvas) {
         // 글자 높이 지정
+        Log.d(TAG, "onDraw");
         float height = getPaddingTop() + getLineHeight();
         for (String text : mCutStr) {
             // 캔버스에 라인 높이 만큰 글자 그리기
@@ -88,6 +91,7 @@ public class ModeTextView extends TextView {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        Log.d(TAG, "onMeasure");
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int parentWidth = MeasureSpec.getSize(widthMeasureSpec);
         int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
@@ -100,12 +104,15 @@ public class ModeTextView extends TextView {
 
     @Override
     protected void onTextChanged(final CharSequence text, final int start, final int before, final int after) {
+        Log.d(TAG, "onTextChanged");
         // 글자가 변경되었을때 다시 세팅
         setTextInfo(text.toString(), this.getWidth(), this.getHeight());
+
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        Log.d(TAG, "onSizeChanged");
         // 사이즈가 변경되었을때 다시 세팅(가로 사이즈만...)
         if (w != oldw) {
             setTextInfo(this.getText().toString(), w, h);

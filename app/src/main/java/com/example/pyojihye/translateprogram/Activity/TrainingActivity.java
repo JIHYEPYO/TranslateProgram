@@ -1,12 +1,9 @@
 package com.example.pyojihye.translateprogram.Activity;
 
-import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -22,13 +19,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.pyojihye.translateprogram.Movement.Const;
-import com.example.pyojihye.translateprogram.Movement.DataBase;
 import com.example.pyojihye.translateprogram.Movement.ModeTextView;
+import com.example.pyojihye.translateprogram.Movement.TrainingDataBase;
 import com.example.pyojihye.translateprogram.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.appindexing.Action;
@@ -53,12 +49,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import static com.example.pyojihye.translateprogram.Movement.Const.MESSAGE_URL;
 import static com.example.pyojihye.translateprogram.Movement.Const.Max;
 import static com.example.pyojihye.translateprogram.Movement.Const.replace;
 import static com.example.pyojihye.translateprogram.Movement.Const.screen;
+import static com.example.pyojihye.translateprogram.Movement.Const.wpm;
 
 public class TrainingActivity extends AppCompatActivity {
 
@@ -68,7 +64,7 @@ public class TrainingActivity extends AppCompatActivity {
 
     // Firebase instance variables
     private DatabaseReference mFirebaseDatabaseReference;
-    private FirebaseRecyclerAdapter<DataBase, SelectModeActivity.MessageViewHolder> mFirebaseAdapter;
+    private FirebaseRecyclerAdapter<TrainingDataBase, SelectModeActivity.MessageViewHolder> mFirebaseAdapter;
 
     // Firebase instance variables
     private FirebaseAuth mFirebaseAuth;
@@ -98,6 +94,9 @@ public class TrainingActivity extends AppCompatActivity {
     public String str;
     private int position;
     private View view;
+    StringBuffer buf;
+
+    private boolean firstSet = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,16 +137,16 @@ public class TrainingActivity extends AppCompatActivity {
 
             // New child entries
             mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-            mFirebaseAdapter = new FirebaseRecyclerAdapter<DataBase, SelectModeActivity.MessageViewHolder>(
-                    DataBase.class,
+            mFirebaseAdapter = new FirebaseRecyclerAdapter<TrainingDataBase, SelectModeActivity.MessageViewHolder>(
+                    TrainingDataBase.class,
                     R.layout.item_message,
                     SelectModeActivity.MessageViewHolder.class,
                     mFirebaseDatabaseReference.child(MESSAGES_CHILD)) {
 
 
                 @Override
-                protected DataBase parseSnapshot(DataSnapshot snapshot) {
-                    DataBase DataBase = super.parseSnapshot(snapshot);
+                protected TrainingDataBase parseSnapshot(DataSnapshot snapshot) {
+                    TrainingDataBase DataBase = super.parseSnapshot(snapshot);
                     if (DataBase != null) {
                         DataBase.setId(snapshot.getKey());
                     }
@@ -157,9 +156,9 @@ public class TrainingActivity extends AppCompatActivity {
 
                 @Override
                 protected void populateViewHolder(SelectModeActivity.MessageViewHolder viewHolder,
-                                                  DataBase DataBase, int position) {
-                    viewHolder.messageTextView.setText(DataBase.getText());
-                    viewHolder.messengerTextView.setText(DataBase.getName());
+                                                  TrainingDataBase DataBase, int position) {
+                    viewHolder.messageTextView.setText(DataBase.getUserName());
+                    viewHolder.messengerTextView.setText(DataBase.getText());
 
                     // write this message to the on-device index
                     FirebaseAppIndex.getInstance().update(getMessageIndexable(DataBase));
@@ -171,26 +170,26 @@ public class TrainingActivity extends AppCompatActivity {
         }
     }
 
-    private Action getMessageViewAction(DataBase OpenDoorMessage) {
+    private Action getMessageViewAction(TrainingDataBase dataBase) {
         return new Action.Builder(Action.Builder.VIEW_ACTION)
-                .setObject(OpenDoorMessage.getName(), MESSAGE_URL.concat(OpenDoorMessage.getId()))
+                .setObject(dataBase.getUserName(), MESSAGE_URL.concat(dataBase.getId()))
                 .setMetadata(new Action.Metadata.Builder().setUpload(false))
                 .build();
     }
 
-    private Indexable getMessageIndexable(DataBase OpenDoorMessage) {
+    private Indexable getMessageIndexable(TrainingDataBase trainingDataBase) {
         PersonBuilder sender = Indexables.personBuilder()
-                .setIsSelf(mUsername == OpenDoorMessage.getName())
-                .setName(OpenDoorMessage.getName())
-                .setUrl(MESSAGE_URL.concat(OpenDoorMessage.getId() + "/sender"));
+                .setIsSelf(mUsername == trainingDataBase.getUserName())
+                .setName(trainingDataBase.getText())
+                .setUrl(MESSAGE_URL.concat(trainingDataBase.getId() + "/sender"));
 
         PersonBuilder recipient = Indexables.personBuilder()
                 .setName(mUsername)
-                .setUrl(MESSAGE_URL.concat(OpenDoorMessage.getId() + "/recipient"));
+                .setUrl(MESSAGE_URL.concat(trainingDataBase.getId() + "/recipient"));
 
         Indexable messageToIndex = Indexables.messageBuilder()
-                .setName(OpenDoorMessage.getText())
-                .setUrl(MESSAGE_URL.concat(OpenDoorMessage.getId()))
+                .setName(trainingDataBase.getText())
+                .setUrl(MESSAGE_URL.concat(trainingDataBase.getId()))
                 .setSender(sender)
                 .setRecipient(recipient)
                 .build();
@@ -200,7 +199,7 @@ public class TrainingActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-//        Log.d(TAG, "onResume()");
+        Log.d(TAG, "onResume()");
         super.onResume();
         if (!screen) {
             replace.clear();
@@ -221,13 +220,14 @@ public class TrainingActivity extends AppCompatActivity {
 
                 if (fileInputStream != null) {
                     bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
-                    StringBuffer buf = new StringBuffer();
+                    buf = new StringBuffer();
 
                     while ((strPath = bufferedReader.readLine()) != null) {
                         buf.append(strPath + '\n');
                     }
 
                     int point = 1;
+
                     for (int i = 1; i < buf.length(); i++) {
                         if (buf.charAt(i) == ' ') {
                             replace.add(buf.substring(point, i + 1));
@@ -259,16 +259,15 @@ public class TrainingActivity extends AppCompatActivity {
                         str += replace.get(i);
                     }
                     modeTextViewTraining.setText(str);
-
+                    firstSet = true;
 
                     long time = System.currentTimeMillis();
                     SimpleDateFormat dayTime = new SimpleDateFormat("yyyy/MM/DD hh:mm:ss");
                     String str2 = dayTime.format(new Date(time));
 
-                    DataBase dataBase = new DataBase(buf.toString(), mUsername, str2);
+                    TrainingDataBase dataBase = new TrainingDataBase(mUsername, str2, wpm, buf.toString());
                     mFirebaseDatabaseReference.child(MESSAGES_CHILD).push().setValue(dataBase);
                 }
-//            Log.d(TAG, "onResume()");
                 num = 100;
                 handler.sendEmptyMessage(1);
 //            DataBase database = new DataBase(strItem,mUsername,mPhotoUrl);
@@ -280,14 +279,51 @@ public class TrainingActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else {
+        }
+    }
+
+    public void FirstSet() {
+        if (firstSet) {
+            int position = 0;
+            for (int i = 0; i < origin.size(); i++) {
+                if (position + origin.get(i).length() < Max) {
+                    position += origin.get(i).length();
+                } else {
+                    if (origin.get(i).contains(" ")) {
+                        position = origin.get(i).length();
+                        replace.set(i - 1, origin.get(i - 1) + "\n");
+                        origin.set(i - 1, origin.get(i - 1) + "\n");
+                    } else if (origin.get(i).contains("\n")) {
+                        replace.set(i - 1, origin.get(i - 1) + "\n");
+                        origin.set(i - 1, origin.get(i - 1) + "\n");
+                        position = 0;
+                    }
+                }
+            }
+            firstSet = false;
         }
     }
 
     public void onStartClick(View v) {
-//        Log.d(TAG, "onStartClick()");
+        Log.d(TAG, "onStartClick()");
 //        view = v;
+
         if (!startChange) {
+            FirstSet();
+            str = "";
+            int size = 0;
+
+            if (replace.size() / 150 >= 1) {
+                size = 150;
+            } else {
+                size = replace.size();
+            }
+
+            for (int i = startPosition; i < size; i++) {
+                str += replace.get(i);
+            }
+            modeTextViewTraining.setText(str);
+
             modeTextViewTraining.setVisibility(View.VISIBLE);
             startChange = true;
             imageViewStart.setImageResource(R.drawable.pause);
@@ -312,7 +348,7 @@ public class TrainingActivity extends AppCompatActivity {
     }
 
     public void onPastClick(View v) {
-//        Log.d(TAG, "onPastClick()");
+        Log.d(TAG, "onPastClick()");
 
         if (currentPosition != 0) {
             if (!change) {
@@ -375,6 +411,7 @@ public class TrainingActivity extends AppCompatActivity {
     }
 
     private void Training() {
+        Log.d(TAG, "Training()");
 //        //전원버튼
 //        IntentFilter offfilter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
 //        registerReceiver(screenoff, offfilter);
@@ -415,7 +452,10 @@ public class TrainingActivity extends AppCompatActivity {
                 text = replace.get(currentPosition);
 
                 for (int i = 0; i < text.length(); i++) {
-                    if (text.substring(i, text.length()).equals("\n")) {
+                    if (text.substring(i, text.length()).startsWith("\n")) {
+                        spacebar = "\n";
+                    }
+                    if (text.substring(i, text.length()).equals("\n") && !text.equals("\n")) {
                         spacebar = spacebar + "\n";
                         replace.set(currentPosition, spacebar);
                         startPosition = currentPosition + 1;
@@ -430,8 +470,11 @@ public class TrainingActivity extends AppCompatActivity {
                 }
 
                 int start = 0;
-                for (int i = 0; i < currentPosition; i++) {
-                    if (replace.get(i).contains("\n")) {
+                for (int i = 0; i <= currentPosition; i++) {
+                    if (replace.get(i).startsWith("\n")) {
+                        start = i;
+                    }
+                    if (replace.get(i).endsWith("\n")) {
                         start = i + 1;
                     }
                 }
@@ -440,7 +483,9 @@ public class TrainingActivity extends AppCompatActivity {
                 for (int i = start; i < position; i++) {
                     str += replace.get(i);
                 }
-
+                if (str.startsWith("\n")) {
+                    str = str.substring(1, str.length());
+                }
                 replaceTextView = str;
 
                 handler.sendEmptyMessage(0);
@@ -463,7 +508,7 @@ public class TrainingActivity extends AppCompatActivity {
             percent++;
         }
         num = 100 - (int) percent;
-//        Log.v("num: ", num + "");
+        Log.v("num: ", num + "");
         handler.sendEmptyMessage(1);
     }
 
@@ -490,7 +535,7 @@ public class TrainingActivity extends AppCompatActivity {
             while (true) {
                 try {
                     if (startChange) {
-                        sleep(60000 / Const.wpm);
+                        sleep(60000 / wpm);
                         Training();
                         if (percent >= 100) {
                             pause();
@@ -542,7 +587,7 @@ public class TrainingActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             // TODO Auto-generated method stub
-                            screen=false;
+                            screen = false;
                             TrainingInit();
                             onResume();
                         }
@@ -620,7 +665,7 @@ public class TrainingActivity extends AppCompatActivity {
 //                if (trainingThread.isAlive()) {
 //                    startChange = false;
 //                    change = false;
-//                    imageViewStart.setImageResource(R.drawable.start);
+//                    imageViewStart.setImageResource(R.drawable.firstSet);
 //                    imageViewPast.setImageResource(R.drawable.past);
 //                    imageViewFuture.setImageResource(R.drawable.future);
 //                    imageViewPast.setClickable(true);

@@ -3,13 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.example.pyojihye.translateprogram.Movement.ModeTextView
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/textViewViewer"
         android:background="@color/colorGray"
         android:scrollbars="vertical"
         android:textSize="25dp"
+        android:lineSpacingExtra="5dp"
         android:layout_margin="15dp"/>
 
 </LinearLayout>

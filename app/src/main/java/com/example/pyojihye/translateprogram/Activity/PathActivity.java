@@ -22,7 +22,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.pyojihye.translateprogram.Movement.DataBase;
+import com.example.pyojihye.translateprogram.Movement.FileDataBase;
 import com.example.pyojihye.translateprogram.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.appindexing.Action;
@@ -57,7 +57,7 @@ public class PathActivity extends AppCompatActivity implements AdapterView.OnIte
     private FirebaseUser mFirebaseUser;
     // Firebase instance variables
     private DatabaseReference mFirebaseDatabaseReference;
-    private FirebaseRecyclerAdapter<DataBase, SelectModeActivity.MessageViewHolder> mFirebaseAdapter;
+    private FirebaseRecyclerAdapter<FileDataBase, SelectModeActivity.MessageViewHolder> mFirebaseAdapter;
 
     private String mUsername;
 
@@ -96,16 +96,16 @@ public class PathActivity extends AppCompatActivity implements AdapterView.OnIte
 
         // New child entries
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-        mFirebaseAdapter = new FirebaseRecyclerAdapter<DataBase, SelectModeActivity.MessageViewHolder>(
-                DataBase.class,
+        mFirebaseAdapter = new FirebaseRecyclerAdapter<FileDataBase, SelectModeActivity.MessageViewHolder>(
+                FileDataBase.class,
                 R.layout.item_message,
                 SelectModeActivity.MessageViewHolder.class,
                 mFirebaseDatabaseReference.child(MESSAGES_CHILD)) {
 
 
             @Override
-            protected DataBase parseSnapshot(DataSnapshot snapshot) {
-                DataBase DataBase = super.parseSnapshot(snapshot);
+            protected FileDataBase parseSnapshot(DataSnapshot snapshot) {
+                FileDataBase DataBase = super.parseSnapshot(snapshot);
                 if (DataBase != null) {
                     DataBase.setId(snapshot.getKey());
                 }
@@ -115,9 +115,9 @@ public class PathActivity extends AppCompatActivity implements AdapterView.OnIte
 
             @Override
             protected void populateViewHolder(SelectModeActivity.MessageViewHolder viewHolder,
-                                              DataBase DataBase, int position) {
-                viewHolder.messageTextView.setText(DataBase.getText());
-                viewHolder.messengerTextView.setText(DataBase.getName());
+                                              FileDataBase DataBase, int position) {
+                viewHolder.messageTextView.setText(DataBase.getUserName());
+                viewHolder.messengerTextView.setText(DataBase.getFileName());
 
                 // write this message to the on-device index
                 FirebaseAppIndex.getInstance().update(getMessageIndexable(DataBase));
@@ -128,26 +128,26 @@ public class PathActivity extends AppCompatActivity implements AdapterView.OnIte
         };
     }
 
-    private Action getMessageViewAction(DataBase OpenDoorMessage) {
+    private Action getMessageViewAction(FileDataBase dataBase) {
         return new Action.Builder(Action.Builder.VIEW_ACTION)
-                .setObject(OpenDoorMessage.getName(), MESSAGE_URL.concat(OpenDoorMessage.getId()))
+                .setObject(dataBase.getUserName(), MESSAGE_URL.concat(dataBase.getId()))
                 .setMetadata(new Action.Metadata.Builder().setUpload(false))
                 .build();
     }
 
-    private Indexable getMessageIndexable(DataBase OpenDoorMessage) {
+    private Indexable getMessageIndexable(FileDataBase fileDataBase) {
         PersonBuilder sender = Indexables.personBuilder()
-                .setIsSelf(mUsername == OpenDoorMessage.getName())
-                .setName(OpenDoorMessage.getName())
-                .setUrl(MESSAGE_URL.concat(OpenDoorMessage.getId() + "/sender"));
+                .setIsSelf(mUsername == fileDataBase.getUserName())
+                .setName(fileDataBase.getFileName())
+                .setUrl(MESSAGE_URL.concat(fileDataBase.getId() + "/sender"));
 
         PersonBuilder recipient = Indexables.personBuilder()
                 .setName(mUsername)
-                .setUrl(MESSAGE_URL.concat(OpenDoorMessage.getId() + "/recipient"));
+                .setUrl(MESSAGE_URL.concat(fileDataBase.getId() + "/recipient"));
 
         Indexable messageToIndex = Indexables.messageBuilder()
-                .setName(OpenDoorMessage.getText())
-                .setUrl(MESSAGE_URL.concat(OpenDoorMessage.getId()))
+                .setName(fileDataBase.getFileName())
+                .setUrl(MESSAGE_URL.concat(fileDataBase.getId()))
                 .setSender(sender)
                 .setRecipient(recipient)
                 .build();
@@ -311,7 +311,7 @@ public class PathActivity extends AppCompatActivity implements AdapterView.OnIte
             SimpleDateFormat dayTime = new SimpleDateFormat("yyyy/MM/DD hh:mm:ss");
             String str = dayTime.format(new Date(time));
 
-            DataBase dataBase = new DataBase(strItem, strPath, mUsername, str);
+            FileDataBase dataBase = new FileDataBase(mUsername, str, strPath, strItem);
             mFirebaseDatabaseReference.child(MESSAGES_CHILD).push().setValue(dataBase);
             Intent selectIntent = new Intent(getApplicationContext(), SelectModeActivity.class);
             startActivity(selectIntent);

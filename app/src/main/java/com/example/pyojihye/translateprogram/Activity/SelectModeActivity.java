@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.pyojihye.translateprogram.Movement.DataBase;
+import com.example.pyojihye.translateprogram.Movement.ModeDataBase;
 import com.example.pyojihye.translateprogram.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.appindexing.Action;
@@ -46,7 +46,7 @@ public class SelectModeActivity extends AppCompatActivity {
 
     // Firebase instance variables
     private DatabaseReference mFirebaseDatabaseReference;
-    private FirebaseRecyclerAdapter<DataBase, MessageViewHolder> mFirebaseAdapter;
+    private FirebaseRecyclerAdapter<ModeDataBase, MessageViewHolder> mFirebaseAdapter;
 
     private String mUsername;
 
@@ -84,16 +84,16 @@ public class SelectModeActivity extends AppCompatActivity {
 
         // New child entries
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-        mFirebaseAdapter = new FirebaseRecyclerAdapter<DataBase, MessageViewHolder>(
-                DataBase.class,
+        mFirebaseAdapter = new FirebaseRecyclerAdapter<ModeDataBase, MessageViewHolder>(
+                ModeDataBase.class,
                 R.layout.item_message,
                 MessageViewHolder.class,
                 mFirebaseDatabaseReference.child(MESSAGES_CHILD)) {
 
 
             @Override
-            protected DataBase parseSnapshot(DataSnapshot snapshot) {
-                DataBase DataBase = super.parseSnapshot(snapshot);
+            protected ModeDataBase parseSnapshot(DataSnapshot snapshot) {
+                ModeDataBase DataBase = super.parseSnapshot(snapshot);
                 if (DataBase != null) {
                     DataBase.setId(snapshot.getKey());
                 }
@@ -103,9 +103,9 @@ public class SelectModeActivity extends AppCompatActivity {
 
             @Override
             protected void populateViewHolder(MessageViewHolder viewHolder,
-                                              DataBase DataBase, int position) {
-                viewHolder.messageTextView.setText(DataBase.getText());
-                viewHolder.messengerTextView.setText(DataBase.getName());
+                                              ModeDataBase DataBase, int position) {
+                viewHolder.messageTextView.setText(DataBase.getMode());
+                viewHolder.messengerTextView.setText(DataBase.getUserName());
 
                 // write this message to the on-device index
                 FirebaseAppIndex.getInstance().update(getMessageIndexable(DataBase));
@@ -116,26 +116,26 @@ public class SelectModeActivity extends AppCompatActivity {
         };
     }
 
-    private Action getMessageViewAction(DataBase OpenDoorMessage) {
+    private Action getMessageViewAction(ModeDataBase modeDataBase) {
         return new Action.Builder(Action.Builder.VIEW_ACTION)
-                .setObject(OpenDoorMessage.getName(), MESSAGE_URL.concat(OpenDoorMessage.getId()))
+                .setObject(modeDataBase.getUserName(), MESSAGE_URL.concat(modeDataBase.getId()))
                 .setMetadata(new Action.Metadata.Builder().setUpload(false))
                 .build();
     }
 
-    private Indexable getMessageIndexable(DataBase OpenDoorMessage) {
+    private Indexable getMessageIndexable(ModeDataBase modeDataBase) {
         PersonBuilder sender = Indexables.personBuilder()
-                .setIsSelf(mUsername == OpenDoorMessage.getName())
-                .setName(OpenDoorMessage.getName())
-                .setUrl(MESSAGE_URL.concat(OpenDoorMessage.getId() + "/sender"));
+                .setIsSelf(mUsername == modeDataBase.getUserName())
+                .setName(modeDataBase.getUserName())
+                .setUrl(MESSAGE_URL.concat(modeDataBase.getId() + "/sender"));
 
         PersonBuilder recipient = Indexables.personBuilder()
                 .setName(mUsername)
-                .setUrl(MESSAGE_URL.concat(OpenDoorMessage.getId() + "/recipient"));
+                .setUrl(MESSAGE_URL.concat(modeDataBase.getId() + "/recipient"));
 
         Indexable messageToIndex = Indexables.messageBuilder()
-                .setName(OpenDoorMessage.getText())
-                .setUrl(MESSAGE_URL.concat(OpenDoorMessage.getId()))
+                .setName(modeDataBase.getMode())
+                .setUrl(MESSAGE_URL.concat(modeDataBase.getId()))
                 .setSender(sender)
                 .setRecipient(recipient)
                 .build();
@@ -148,7 +148,7 @@ public class SelectModeActivity extends AppCompatActivity {
         SimpleDateFormat dayTime = new SimpleDateFormat("yyyy/MM/DD hh:mm:ss");
         String str = dayTime.format(new Date(time));
 
-        DataBase dataBase = new DataBase("Training Mode", mUsername, str);
+        ModeDataBase dataBase = new ModeDataBase(str, mUsername, "Training Mode");
         mFirebaseDatabaseReference.child(MESSAGES_CHILD).push().setValue(dataBase);
 
         Intent intentTrainingOption = new Intent(this, TrainingOptionActivity.class);
@@ -163,7 +163,7 @@ public class SelectModeActivity extends AppCompatActivity {
         SimpleDateFormat dayTime = new SimpleDateFormat("yyyy/MM/DD hh:mm:ss");
         String str = dayTime.format(new Date(time));
 
-        DataBase dataBase = new DataBase("Viewer Mode", mUsername, str);
+        ModeDataBase dataBase = new ModeDataBase(str, mUsername, "Viewer Mode");
         mFirebaseDatabaseReference.child(MESSAGES_CHILD).push().setValue(dataBase);
 
         Intent intentViewerOption = new Intent(this, ViewerOptionActivity.class);

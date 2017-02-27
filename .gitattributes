@@ -1,5 +1,5 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# Auto detect gap files and perform LF normalization
+* gap=auto
 
 # Custom for Visual Studio
 *.cs     diff=csharp

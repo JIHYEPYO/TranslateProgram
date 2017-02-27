@@ -21,7 +21,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Set Delete Word>>"
+                android:text="Set Word To Delete>>"
                 android:textStyle="bold"
                 sl:scale_textsize="15"
                 sl:scale_width="200"
@@ -117,7 +117,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="PRINT"
+                android:text="view"
                 android:id="@+id/buttonPrint"
                 android:layout_marginTop="30dp"
                 android:layout_gravity="bottom|center_horizontal"

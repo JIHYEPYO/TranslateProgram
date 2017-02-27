@@ -9,11 +9,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.Window;
 import android.widget.TextView;
 
 import com.example.pyojihye.translateprogram.Movement.Const;
-import com.example.pyojihye.translateprogram.Movement.DataBase;
+import com.example.pyojihye.translateprogram.Movement.ViewerDataBase;
 import com.example.pyojihye.translateprogram.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.appindexing.Action;
@@ -56,7 +55,7 @@ public class ViewerActivity extends Activity {
 
     // Firebase instance variables
     private DatabaseReference mFirebaseDatabaseReference;
-    private FirebaseRecyclerAdapter<DataBase, SelectModeActivity.MessageViewHolder> mFirebaseAdapter;
+    private FirebaseRecyclerAdapter<ViewerDataBase, SelectModeActivity.MessageViewHolder> mFirebaseAdapter;
 
     private List<String> word = new ArrayList<>();
     public TextView textViewViewer;
@@ -88,16 +87,16 @@ public class ViewerActivity extends Activity {
 
         // New child entries
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-        mFirebaseAdapter = new FirebaseRecyclerAdapter<DataBase, SelectModeActivity.MessageViewHolder>(
-                DataBase.class,
+        mFirebaseAdapter = new FirebaseRecyclerAdapter<ViewerDataBase, SelectModeActivity.MessageViewHolder>(
+                ViewerDataBase.class,
                 R.layout.item_message,
                 SelectModeActivity.MessageViewHolder.class,
                 mFirebaseDatabaseReference.child(MESSAGES_CHILD)) {
 
 
             @Override
-            protected DataBase parseSnapshot(DataSnapshot snapshot) {
-                DataBase DataBase = super.parseSnapshot(snapshot);
+            protected ViewerDataBase parseSnapshot(DataSnapshot snapshot) {
+                ViewerDataBase DataBase = super.parseSnapshot(snapshot);
                 if (DataBase != null) {
                     DataBase.setId(snapshot.getKey());
                 }
@@ -107,9 +106,9 @@ public class ViewerActivity extends Activity {
 
             @Override
             protected void populateViewHolder(SelectModeActivity.MessageViewHolder viewHolder,
-                                              DataBase DataBase, int position) {
-                viewHolder.messageTextView.setText(DataBase.getText());
-                viewHolder.messengerTextView.setText(DataBase.getName());
+                                              ViewerDataBase DataBase, int position) {
+                viewHolder.messageTextView.setText(DataBase.getUserName());
+                viewHolder.messengerTextView.setText(DataBase.getText());
 
                 // write this message to the on-device index
                 FirebaseAppIndex.getInstance().update(getMessageIndexable(DataBase));
@@ -120,26 +119,26 @@ public class ViewerActivity extends Activity {
         };
     }
 
-    private Action getMessageViewAction(DataBase OpenDoorMessage) {
+    private Action getMessageViewAction(ViewerDataBase dataBase) {
         return new Action.Builder(Action.Builder.VIEW_ACTION)
-                .setObject(OpenDoorMessage.getName(), MESSAGE_URL.concat(OpenDoorMessage.getId()))
+                .setObject(dataBase.getUserName(), MESSAGE_URL.concat(dataBase.getId()))
                 .setMetadata(new Action.Metadata.Builder().setUpload(false))
                 .build();
     }
 
-    private Indexable getMessageIndexable(DataBase OpenDoorMessage) {
+    private Indexable getMessageIndexable(ViewerDataBase dataBase) {
         PersonBuilder sender = Indexables.personBuilder()
-                .setIsSelf(mUsername == OpenDoorMessage.getName())
-                .setName(OpenDoorMessage.getName())
-                .setUrl(MESSAGE_URL.concat(OpenDoorMessage.getId() + "/sender"));
+                .setIsSelf(mUsername == dataBase.getUserName())
+                .setName(dataBase.getText())
+                .setUrl(MESSAGE_URL.concat(dataBase.getId() + "/sender"));
 
         PersonBuilder recipient = Indexables.personBuilder()
                 .setName(mUsername)
-                .setUrl(MESSAGE_URL.concat(OpenDoorMessage.getId() + "/recipient"));
+                .setUrl(MESSAGE_URL.concat(dataBase.getId() + "/recipient"));
 
         Indexable messageToIndex = Indexables.messageBuilder()
-                .setName(OpenDoorMessage.getText())
-                .setUrl(MESSAGE_URL.concat(OpenDoorMessage.getId()))
+                .setName(dataBase.getText())
+                .setUrl(MESSAGE_URL.concat(dataBase.getId()))
                 .setSender(sender)
                 .setRecipient(recipient)
                 .build();
@@ -170,9 +169,18 @@ public class ViewerActivity extends Activity {
 
                 long time = System.currentTimeMillis();
                 SimpleDateFormat dayTime = new SimpleDateFormat("yyyy/MM/DD hh:mm:ss");
-                String str2 = dayTime.format(new Date(time));
+                String ti = dayTime.format(new Date(time));
 
-                DataBase dataBase = new DataBase(buf.toString(), mUsername, str2);
+                String deleteWord = "";
+                for (int i = 0; i < delete.size(); i++) {
+                    if (i != delete.size() - 1) {
+                        deleteWord += delete.get(i) + ", ";
+                    } else {
+                        deleteWord += delete.get(i);
+                    }
+
+                }
+                ViewerDataBase dataBase = new ViewerDataBase(mUsername, ti, deleteWord, gap, buf.toString());
                 mFirebaseDatabaseReference.child(MESSAGES_CHILD).push().setValue(dataBase);
 
                 //word 배열에 값 할당
@@ -184,50 +192,9 @@ public class ViewerActivity extends Activity {
                     }
                 }
 
-                //Gap먼저 시작.
-                //Gap이 0이 아닐때만 반복되도록 설정
-                if (gap != 0) {
-                    String text;
-                    for (int i = 0; i < word.size(); i++) {
-                        if (i % (gap + 1) == 0) {
-                            String underbar = "";
-                            text = word.get(i);
-                            for (int j = 0; j < text.length() - 1; j++) {
-                                underbar += "_";
-                            }
-                            if (text.charAt(text.length() - 1) == '\n') {
-                                underbar += "\n";
-                            } else {
-                                underbar += " ";
-                            }
-                            word.set(i, underbar);
-                        }
-                    }
-                }
-
-                //삭제할 단어를 입력한 경우에만
-                if (delete.size() > 0) {
-                    String text;
-                    for (int i = 0; i < word.size(); i++) {
-                        for (int j = 0; j < delete.size(); j++) {
-                            if (word.get(i).equals(delete.get(j) + " ") || word.get(i).equals(delete.get(j) + "\n")) {
-                                text = word.get(i);
-
-                                String underbar = "";
-                                text = word.get(i);
-                                for (int k = 0; k < text.length() - 1; k++) {
-                                    underbar += "_";
-                                }
-                                if (text.charAt(text.length() - 1) == '\n') {
-                                    underbar += "\n";
-                                } else {
-                                    underbar += " ";
-                                }
-                                word.set(i, underbar);
-                            }
-                        }
-                    }
-                }
+                //삭제할 단어를 입력한 경우 먼저 시작
+                Delete();
+                Gap();
 
                 fileInputStream.close();
 
@@ -235,7 +202,7 @@ public class ViewerActivity extends Activity {
                 for (String s : word) {
                     str += s;
                 }
-                textViewViewer.setText(str+"\n\n\n");
+                textViewViewer.setText(str);
             }
             Log.v("TextView : ", textViewViewer.getText().toString());
             Log.d(TAG, "onResume()");
@@ -244,6 +211,52 @@ public class ViewerActivity extends Activity {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void Gap() {
+        //Gap이 0이 아닐때만 반복되도록 설정
+        if (gap != 0) {
+            String text;
+            for (int i = 0; i < word.size(); i++) {
+                if (i % (gap + 1) != 0) {
+                    String underbar = "";
+                    text = word.get(i);
+                    for (int j = 0; j < text.length() - 1; j++) {
+                        underbar += "_";
+                    }
+                    if (text.charAt(text.length() - 1) == '\n') {
+                        underbar += "\n";
+                    } else {
+                        underbar += " ";
+                    }
+                    word.set(i, underbar);
+                }
+            }
+        }
+    }
+
+    public void Delete() {
+        //삭제할 단어를 입력한 경우에만
+        if (delete.size() > 0) {
+            String text;
+            for (int i = 0; i < word.size(); i++) {
+                for (int j = 0; j < delete.size(); j++) {
+                    if (word.get(i).equals(delete.get(j) + " ") || word.get(i).equals(delete.get(j) + "\n")) {
+                        text = word.get(i);
+
+                        String underbar = "";
+                        text = word.get(i);
+                        underbar = "____";
+                        if (text.charAt(text.length() - 1) == '\n') {
+                            underbar += "\n";
+                        } else {
+                            underbar += " ";
+                        }
+                        word.set(i, underbar);
+                    }
+                }
+            }
         }
     }
 
