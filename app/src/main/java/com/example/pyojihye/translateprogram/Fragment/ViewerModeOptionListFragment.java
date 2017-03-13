@@ -12,6 +12,9 @@ import android.widget.ListView;
 import com.example.pyojihye.translateprogram.Movement.Const;
 import com.example.pyojihye.translateprogram.R;
 
+import static com.example.pyojihye.translateprogram.Movement.Const.delete;
+import static com.example.pyojihye.translateprogram.Movement.Const.delete_num;
+
 public class ViewerModeOptionListFragment extends android.support.v4.app.Fragment {
     private final String TAG = "ViewerModeOptionListFragment";
 
@@ -34,14 +37,16 @@ public class ViewerModeOptionListFragment extends android.support.v4.app.Fragmen
 
         View v = inflater.inflate(R.layout.fragment_viewer_mode_option_list, container, false);
         listViewDelete = (ListView) v.findViewById(R.id.listViewDeleteWordList);
-        adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, Const.delete);
+        adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, delete);
         listViewDelete.setAdapter(adapter);
-        listViewDelete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listViewDelete.setLongClickable(true);
+        listViewDelete.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Const.delete.remove(position);
-                Const.delete_num--;
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                delete.remove(position);
+                delete_num--;
                 onResume();
+                return true;
             }
         });
         return v;

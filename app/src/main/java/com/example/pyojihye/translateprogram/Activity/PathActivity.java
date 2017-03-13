@@ -308,7 +308,7 @@ public class PathActivity extends AppCompatActivity implements AdapterView.OnIte
 
         if (strItem.endsWith("txt")) {
             long time = System.currentTimeMillis();
-            SimpleDateFormat dayTime = new SimpleDateFormat("yyyy/MM/DD hh:mm:ss");
+            SimpleDateFormat dayTime = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
             String str = dayTime.format(new Date(time));
 
             FileDataBase dataBase = new FileDataBase(mUsername, str, strPath, strItem);

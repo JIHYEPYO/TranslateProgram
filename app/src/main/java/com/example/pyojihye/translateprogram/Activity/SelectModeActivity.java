@@ -145,7 +145,7 @@ public class SelectModeActivity extends AppCompatActivity {
 
     public void onImageTrainingClick(View v) {
         long time = System.currentTimeMillis();
-        SimpleDateFormat dayTime = new SimpleDateFormat("yyyy/MM/DD hh:mm:ss");
+        SimpleDateFormat dayTime = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         String str = dayTime.format(new Date(time));
 
         ModeDataBase dataBase = new ModeDataBase(str, mUsername, "Training Mode");
@@ -160,7 +160,7 @@ public class SelectModeActivity extends AppCompatActivity {
         delete.clear();
 
         long time = System.currentTimeMillis();
-        SimpleDateFormat dayTime = new SimpleDateFormat("yyyy/MM/DD hh:mm:ss");
+        SimpleDateFormat dayTime = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         String str = dayTime.format(new Date(time));
 
         ModeDataBase dataBase = new ModeDataBase(str, mUsername, "Viewer Mode");

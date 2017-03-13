@@ -262,7 +262,7 @@ public class TrainingActivity extends AppCompatActivity {
                     firstSet = true;
 
                     long time = System.currentTimeMillis();
-                    SimpleDateFormat dayTime = new SimpleDateFormat("yyyy/MM/DD hh:mm:ss");
+                    SimpleDateFormat dayTime = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                     String str2 = dayTime.format(new Date(time));
 
                     TrainingDataBase dataBase = new TrainingDataBase(mUsername, str2, wpm, buf.toString());
@@ -589,6 +589,8 @@ public class TrainingActivity extends AppCompatActivity {
                             // TODO Auto-generated method stub
                             screen = false;
                             TrainingInit();
+                            replace.clear();
+                            origin.clear();
                             onResume();
                         }
                     });

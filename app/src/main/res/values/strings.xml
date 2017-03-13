@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Translate Program</string>
+    <string name="app_name">Interpret Program</string>
     <string name="snack_bar_wpm">wpm값을 숫자로 입력해야합니다.\n기본값인 100으로 설정하시겠습니까?</string>
     <string name="snack_bar_wpm_minus">0보다 큰 숫자를 입력해 주세요.</string>
     <string name="snack_bar_wpm_plus">500이하의 숫자만 훈련 가능합니다.</string>

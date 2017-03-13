@@ -168,7 +168,7 @@ public class ViewerActivity extends Activity {
                 }
 
                 long time = System.currentTimeMillis();
-                SimpleDateFormat dayTime = new SimpleDateFormat("yyyy/MM/DD hh:mm:ss");
+                SimpleDateFormat dayTime = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                 String ti = dayTime.format(new Date(time));
 
                 String deleteWord = "";
