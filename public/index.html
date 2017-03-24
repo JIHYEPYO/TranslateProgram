@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Interpret Program</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/extern.css"> </head>
+<link rel="shortcut icon" type="image/x-icon" href="resource/shortcut-icon.png" />
+<body>
+    <!-- 네비게이션 영역-->
+    <nav class="">
+        <div class="nav-wrapper container"> 
+            <a class="brand-logo">Interpret Program</a> 
+        </div>
+        <div class="topnav hide-on-med-and-down"> 
+            <a href="contact.html">Contact</a> 
+            <a href="user.html">User</a> 
+            <a href="total.html">Total</a> 
+            <a class="active" href="">Home</a> 
+        </div>
+    </nav>
+    
+    <!--본문 영역-->
+    <article>     
+        <img src="resource/main.png" class="main-image">
+
+        <div class="main-container">
+            <div class="main-article">
+                <span align="justify" style="display:inline;">
+                    This site collects user's log information collected from <strong>'Interpret Program'</strong> and displays it as appropriate information using Google Chart. Collect the necessary information through various charts, and contact us through the <strong>'Contact'</strong> if you do not have the information you want!
+                    
+                    <br><br>
+                    Download : <a href="InterpretProgram.apk"> 
+                            <img border="0" src="resource/icon.png" width="60" height="60" style="vertical-align:middle"> 
+                        </a>
+                </span>
+            </div>
+            
+            <div class="slideshow-container hide-on-med-and-down">
+                <div class="mySlides fade">
+                    <div class="numbertext">1 / 7</div> 
+                    <img src="resource/phone_main.png" style="width:80%">
+                    <div class="text">Main Page</div>
+                </div>
+                <div class="mySlides fade">
+                    <div class="numbertext">2 / 7</div> 
+                    <img src="resource/phone_path.png" style="width:80%">
+                    <div class="text">Select Path</div>
+                </div>
+                <div class="mySlides fade">
+                    <div class="numbertext">3 / 7</div> 
+                    <img src="resource/phone_mode.png" style="width:80%">
+                    <div class="text">Select Mode</div>
+                </div>
+                <div class="mySlides fade">
+                    <div class="numbertext">4 / 7</div> 
+                    <img src="resource/phone_training1.png" style="width:80%">
+                    <div class="text">Training Mode (1)</div>
+                </div>
+                <div class="mySlides fade">
+                    <div class="numbertext">5 / 7</div> 
+                    <img src="resource/phone_training2.png" style="width:80%">
+                    <div class="text">Training Mode (2)</div>
+                </div>
+                <div class="mySlides fade">
+                    <div class="numbertext">6 / 7</div> 
+                    <img src="resource/phone_viewer1.png" style="width:80%">
+                    <div class="text">Viewer Mode (1)</div>    
+                </div>
+                <div class="mySlides fade">
+                    <div class="numbertext">7 / 7</div> 
+                    <img src="resource/phone_viewer2.png" style="width:80%">
+                    <div class="text">Viewer Mode (2)</div>
+                </div> 
+                
+                <a class="prev" onclick="plusSlides(-1)">&#10094;</a> 
+                <a class="next" onclick="plusSlides(1)">&#10095;</a>
+                <br>
+                <div style="text-align:center"> 
+                    <span class="dot" onclick="currentSlide(1)"></span> 
+                    <span class="dot" onclick="currentSlide(2)"></span> 
+                    <span class="dot" onclick="currentSlide(3)"></span> 
+                    <span class="dot" onclick="currentSlide(4)"></span> 
+                    <span class="dot" onclick="currentSlide(5)"></span> 
+                    <span class="dot" onclick="currentSlide(6)"></span> 
+                    <span class="dot" onclick="currentSlide(7)"></span>
+                </div>
+            </div>    
+        </div>
+
+    </article>
+    
+    <script>
+        var slideIndex = 1;
+        showSlides(slideIndex);
+
+        function plusSlides(n) {
+            showSlides(slideIndex += n);
+        }
+
+        function currentSlide(n) {
+            showSlides(slideIndex = n);
+        }
+
+        function showSlides(n) {
+            var i;
+            var slides = document.getElementsByClassName("mySlides");
+            var dots = document.getElementsByClassName("dot");
+            if (n > slides.length) {
+                slideIndex = 1
+            }
+            if (n < 1) {
+                slideIndex = slides.length
+            }
+            for (i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+            for (i = 0; i < dots.length; i++) {
+                dots[i].className = dots[i].className.replace(" active", "");
+            }
+            slides[slideIndex - 1].style.display = "block";
+            dots[slideIndex - 1].className += " active";
+        }
+    </script>
+    
+    <!-- 바닥글 영역 -->
+    <footer class="page-footer green">
+        <div class="container">
+            <div class="row">
+                <div class="col l6 s12">
+                    <h3 class="white-text">Network Computing and System Laboratory</h3>
+                    <p class="grey-text text-lighten-4">Dept of Computer Engineering
+                        <br>Keimyung University</p>
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <div class="container"> &copy; 2017 Copyright 
+                <a href="http://ncs.kmu.ac.kr" target="_blank" class="white-text">NCS Lab</a> 
+                design by JIHYE PYO </div>
+        </div>
+    </footer>
+</body>
+
+</html>

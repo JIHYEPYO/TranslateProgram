@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.pyojihye.translateprogram.Movement.ButtonMenuDataBase;
 import com.example.pyojihye.translateprogram.Movement.ModeDataBase;
 import com.example.pyojihye.translateprogram.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -38,6 +39,7 @@ public class SelectModeActivity extends AppCompatActivity {
     private final String TAG = "SelectModeActivity";
     private final String ANONYMOUS = "ANONYMOUS";
     private final String MESSAGES_CHILD = "Mode";
+    private final String MESSAGE_MENU="ButtonMenu";
 
 
     // Firebase instance variables
@@ -182,11 +184,24 @@ public class SelectModeActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.sign_out_menu:
+                long time = System.currentTimeMillis();
+                SimpleDateFormat dayTime = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                String str = dayTime.format(new Date(time));
+
+                ButtonMenuDataBase dataBase = new ButtonMenuDataBase(mUsername, str, "Sign Out", TAG);
+                mFirebaseDatabaseReference.child(MESSAGE_MENU).push().setValue(dataBase);
+
                 mFirebaseAuth.signOut();
                 mUsername = ANONYMOUS;
                 startActivity(new Intent(this, LoginActivity.class));
                 return true;
             case R.id.developer:
+                long time2 = System.currentTimeMillis();
+                SimpleDateFormat dayTime2 = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                String str2 = dayTime2.format(new Date(time2));
+
+                ButtonMenuDataBase dataBase2 = new ButtonMenuDataBase(mUsername, str2, "Developer Info", TAG);
+                mFirebaseDatabaseReference.child(MESSAGE_MENU).push().setValue(dataBase2);
                 Intent intent = new Intent(getApplicationContext(), DeveloperActivity.class);
                 startActivity(intent);
                 return true;

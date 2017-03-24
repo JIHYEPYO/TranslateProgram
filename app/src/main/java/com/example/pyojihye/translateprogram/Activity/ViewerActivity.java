@@ -11,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.example.pyojihye.translateprogram.Movement.ButtonMenuDataBase;
 import com.example.pyojihye.translateprogram.Movement.Const;
 import com.example.pyojihye.translateprogram.Movement.ViewerDataBase;
 import com.example.pyojihye.translateprogram.R;
@@ -46,6 +47,8 @@ public class ViewerActivity extends Activity {
     private final String TAG = "ViewerActivity";
     private final String ANONYMOUS = "ANONYMOUS";
     private final String MESSAGES_CHILD = "Viewer";
+    private final String MESSAGE_MENU="ButtonMenu";
+
 
     // Firebase instance variables
     private FirebaseAuth mFirebaseAuth;
@@ -271,11 +274,24 @@ public class ViewerActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.sign_out_menu:
+                long time = System.currentTimeMillis();
+                SimpleDateFormat dayTime = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                String str = dayTime.format(new Date(time));
+
+                ButtonMenuDataBase dataBase = new ButtonMenuDataBase(mUsername, str, "Sign Out", TAG);
+                mFirebaseDatabaseReference.child(MESSAGE_MENU).push().setValue(dataBase);
+
                 mFirebaseAuth.signOut();
                 mUsername = ANONYMOUS;
                 startActivity(new Intent(this, LoginActivity.class));
                 return true;
             case R.id.developer:
+                long time2 = System.currentTimeMillis();
+                SimpleDateFormat dayTime2 = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                String str2 = dayTime2.format(new Date(time2));
+
+                ButtonMenuDataBase dataBase2 = new ButtonMenuDataBase(mUsername, str2, "Developer Info", TAG);
+                mFirebaseDatabaseReference.child(MESSAGE_MENU).push().setValue(dataBase2);
                 Intent intent = new Intent(getApplicationContext(), DeveloperActivity.class);
                 startActivity(intent);
                 return true;

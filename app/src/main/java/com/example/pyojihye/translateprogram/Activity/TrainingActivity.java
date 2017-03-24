@@ -19,9 +19,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.pyojihye.translateprogram.Movement.ButtonMenuDataBase;
+import com.example.pyojihye.translateprogram.Movement.ButtonTrainingDataBase;
 import com.example.pyojihye.translateprogram.Movement.Const;
 import com.example.pyojihye.translateprogram.Movement.ModeTextView;
 import com.example.pyojihye.translateprogram.Movement.TrainingDataBase;
@@ -61,10 +64,15 @@ public class TrainingActivity extends AppCompatActivity {
     private final String TAG = "TrainingActivity";
     private final String ANONYMOUS = "ANONYMOUS";
     private final String MESSAGES_CHILD = "Training";
+    private final String MESSAGES_BUTTON = "ButtonTraining";
+    private final String MESSAGE_MENU="ButtonMenu";
+
 
     // Firebase instance variables
     private DatabaseReference mFirebaseDatabaseReference;
     private FirebaseRecyclerAdapter<TrainingDataBase, SelectModeActivity.MessageViewHolder> mFirebaseAdapter;
+    private FirebaseRecyclerAdapter<TrainingDataBase, SelectModeActivity.MessageViewHolder> mFirebaseAdapter2;
+
 
     // Firebase instance variables
     private FirebaseAuth mFirebaseAuth;
@@ -75,8 +83,8 @@ public class TrainingActivity extends AppCompatActivity {
 
     private ModeTextView modeTextViewTraining;
     private ImageView imageViewStart;
-    private ImageView imageViewPast;
-    private ImageView imageViewFuture;
+    private ImageView imageViewRewind;
+    private ImageView imageViewForward;
     private TextView numberPercent;
     private boolean startChange = false;
 
@@ -111,8 +119,8 @@ public class TrainingActivity extends AppCompatActivity {
             Typeface face = Typeface.createFromAsset(getAssets(), "D2Coding.ttc");
             modeTextViewTraining.setTypeface(face);
             imageViewStart = (ImageView) findViewById(R.id.imageViewStart);
-            imageViewPast = (ImageView) findViewById(R.id.imageViewPast);
-            imageViewFuture = (ImageView) findViewById(R.id.imageViewFuture);
+            imageViewRewind = (ImageView) findViewById(R.id.imageViewRewind);
+            imageViewForward = (ImageView) findViewById(R.id.imageViewForward);
             imageViewStart.setImageResource(R.drawable.start);
             numberPercent = (TextView) findViewById(R.id.numberPercent);
             modeTextViewTraining.setVisibility(View.INVISIBLE);
@@ -209,10 +217,10 @@ public class TrainingActivity extends AppCompatActivity {
 
             imageViewStart.setImageResource(R.drawable.start);
             modeTextViewTraining.setVisibility(View.INVISIBLE);
-            imageViewPast.setImageResource(0);
-            imageViewFuture.setImageResource(0);
-            imageViewPast.setClickable(false);
-            imageViewFuture.setClickable(false);
+            imageViewRewind.setImageResource(0);
+            imageViewForward.setImageResource(0);
+            imageViewRewind.setClickable(false);
+            imageViewForward.setClickable(false);
 
             try {
                 File path = new File(Const.strPath);
@@ -227,6 +235,9 @@ public class TrainingActivity extends AppCompatActivity {
                     }
 
                     int point = 1;
+
+                    replace.clear();
+                    origin.clear();
 
                     for (int i = 1; i < buf.length(); i++) {
                         if (buf.charAt(i) == ' ') {
@@ -306,9 +317,18 @@ public class TrainingActivity extends AppCompatActivity {
 
     public void onStartClick(View v) {
         Log.d(TAG, "onStartClick()");
+
 //        view = v;
 
         if (!startChange) {
+
+            long time = System.currentTimeMillis();
+            SimpleDateFormat dayTime = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            String str2 = dayTime.format(new Date(time));
+
+            ButtonTrainingDataBase dataBase = new ButtonTrainingDataBase(mUsername, str2, "Start Button(▶)");
+            mFirebaseDatabaseReference.child(MESSAGES_BUTTON).push().setValue(dataBase);
+
             FirstSet();
             str = "";
             int size = 0;
@@ -327,28 +347,43 @@ public class TrainingActivity extends AppCompatActivity {
             modeTextViewTraining.setVisibility(View.VISIBLE);
             startChange = true;
             imageViewStart.setImageResource(R.drawable.pause);
-            imageViewPast.setImageResource(0);
-            imageViewFuture.setImageResource(0);
-            imageViewPast.setClickable(false);
-            imageViewFuture.setClickable(false);
+            imageViewRewind.setImageResource(0);
+            imageViewForward.setImageResource(0);
+            imageViewRewind.setClickable(false);
+            imageViewForward.setClickable(false);
             if (threadStart) {
                 trainingThread.restart();
             } else {
                 trainingThread.start();
             }
         } else {
+
+            long time = System.currentTimeMillis();
+            SimpleDateFormat dayTime = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            String str2 = dayTime.format(new Date(time));
+
+            ButtonTrainingDataBase dataBase = new ButtonTrainingDataBase(mUsername, str2, "Pause Button(||)");
+            mFirebaseDatabaseReference.child(MESSAGES_BUTTON).push().setValue(dataBase);
+
             startChange = false;
             change = false;
             imageViewStart.setImageResource(R.drawable.start);
-            imageViewPast.setImageResource(R.drawable.past);
-            imageViewFuture.setImageResource(R.drawable.future);
-            imageViewPast.setClickable(true);
-            imageViewFuture.setClickable(true);
+            imageViewRewind.setImageResource(R.drawable.past);
+            imageViewForward.setImageResource(R.drawable.future);
+            imageViewRewind.setClickable(true);
+            imageViewForward.setClickable(true);
         }
     }
 
-    public void onPastClick(View v) {
-        Log.d(TAG, "onPastClick()");
+    public void onRewindClick(View v) {
+        Log.d(TAG, "onRewindClick()");
+
+        long time = System.currentTimeMillis();
+        SimpleDateFormat dayTime = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        String str2 = dayTime.format(new Date(time));
+
+        ButtonTrainingDataBase dataBase = new ButtonTrainingDataBase(mUsername, str2, "Rewind Button(<<)");
+        mFirebaseDatabaseReference.child(MESSAGES_BUTTON).push().setValue(dataBase);
 
         if (currentPosition != 0) {
             if (!change) {
@@ -393,8 +428,16 @@ public class TrainingActivity extends AppCompatActivity {
         }
     }
 
-    public void onFutureClick(View v) {
-        Log.d(TAG, "onFutureClick()");
+    public void onForwardClick(View v) {
+        Log.d(TAG, "onForwardClick()");
+
+        long time = System.currentTimeMillis();
+        SimpleDateFormat dayTime = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        String str2 = dayTime.format(new Date(time));
+
+        ButtonTrainingDataBase dataBase = new ButtonTrainingDataBase(mUsername, str2, "Forward Button(>>)");
+        mFirebaseDatabaseReference.child(MESSAGES_BUTTON).push().setValue(dataBase);
+
         change = true;
         Training();
     }
@@ -440,10 +483,10 @@ public class TrainingActivity extends AppCompatActivity {
             trainingThread.pause();
             screen = true;
             imageViewStart.setImageResource(R.drawable.start);
-            imageViewPast.setImageResource(R.drawable.past);
-            imageViewFuture.setImageResource(R.drawable.future);
-            imageViewPast.setClickable(true);
-            imageViewFuture.setClickable(true);
+            imageViewRewind.setImageResource(R.drawable.past);
+            imageViewForward.setImageResource(R.drawable.future);
+            imageViewRewind.setClickable(true);
+            imageViewForward.setClickable(true);
         } else {
             if (currentPosition < endPosition) {
                 String text = "";
@@ -635,11 +678,24 @@ public class TrainingActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.sign_out_menu:
+                long time = System.currentTimeMillis();
+                SimpleDateFormat dayTime = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                String str = dayTime.format(new Date(time));
+
+                ButtonMenuDataBase dataBase = new ButtonMenuDataBase(mUsername, str, "Sign Out", TAG);
+                mFirebaseDatabaseReference.child(MESSAGE_MENU).push().setValue(dataBase);
+
                 mFirebaseAuth.signOut();
                 mUsername = ANONYMOUS;
                 startActivity(new Intent(this, LoginActivity.class));
                 return true;
             case R.id.developer:
+                long time2 = System.currentTimeMillis();
+                SimpleDateFormat dayTime2 = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                String str2 = dayTime2.format(new Date(time2));
+
+                ButtonMenuDataBase dataBase2 = new ButtonMenuDataBase(mUsername, str2, "Developer Info", TAG);
+                mFirebaseDatabaseReference.child(MESSAGE_MENU).push().setValue(dataBase2);
                 Intent intent = new Intent(getApplicationContext(), DeveloperActivity.class);
                 startActivity(intent);
                 return true;
@@ -668,10 +724,10 @@ public class TrainingActivity extends AppCompatActivity {
 //                    startChange = false;
 //                    change = false;
 //                    imageViewStart.setImageResource(R.drawable.firstSet);
-//                    imageViewPast.setImageResource(R.drawable.past);
-//                    imageViewFuture.setImageResource(R.drawable.future);
-//                    imageViewPast.setClickable(true);
-//                    imageViewFuture.setClickable(true);
+//                    imageViewRewind.setImageResource(R.drawable.Rewind);
+//                    imageViewForward.setImageResource(R.drawable.Forward);
+//                    imageViewRewind.setClickable(true);
+//                    imageViewForward.setClickable(true);
 //                }
 //            }
             if (!intent.getAction().equals(Screenoff))

@@ -36,10 +36,10 @@
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:id="@+id/imageViewPast"
+                android:id="@+id/imageViewRewind"
                 android:layout_margin="5dp"
                 android:layout_weight="1"
-                android:onClick="onPastClick" />
+                android:onClick="onRewindClick" />
 
             <ImageView
                 android:layout_width="50dp"
@@ -52,10 +52,10 @@
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:id="@+id/imageViewFuture"
+                android:id="@+id/imageViewForward"
                 android:layout_margin="5dp"
                 android:layout_weight="1"
-                android:onClick="onFutureClick" />
+                android:onClick="onForwardClick" />
         </LinearLayout>
 
         <LinearLayout

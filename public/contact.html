@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Interpret Program</title>
+    <link rel="stylesheet" type="text/css" href="css/extern.css">
+    <link rel="shortcut icon" type="image/x-icon" href="resource/shortcut-icon.png" />
+ </head>
+        
+<body>
+    <!-- 네비게이션 영역-->
+    <nav class="">
+        <div class="nav-wrapper container"> 
+            <a class="brand-logo">Interpret Program</a> 
+        </div>
+        <div class="topnav hide-on-med-and-down"> 
+            <a class="active" href="">Contact</a> 
+            <a href="user.html">User</a> 
+            <a href="total.html">Total</a> 
+            <a href="index.html">Home</a> 
+        </div>
+    </nav>
+    
+    <!--본문 영역-->
+    <article>     
+        <div class="container2">
+            <div class="row2 header">
+                <h1>CONTACT US &nbsp;</h1>
+                <h3>Please fill out the form or <br>visit the 1303, Engineering Building 1, Keimyung University.</h3>
+            </div>
+            
+            <div class="row body">
+                <form method='post' ENCTYPE="text/plain" submit="return submit_click()" action="http://localhost:81/test/file.php">
+                    <ul>                
+                        <li>
+                            <p class="left">
+                                <label for="first_name">Name</label>
+                                <input type="text" name="first_name" placeholder="홍길동" id="name"/>
+                            </p>
+                        </li>
+                        
+                        <li>
+                            <p>
+                                <label for="email">E-mail <span class="req">*</span></label>
+                                <input type="email" name="email" placeholder="abc@gmail.com" id="email"/>
+                            </p>
+                        </li>   
+                        
+                        <li><div class="divider"></div></li>
+                        <li>
+                            <label for="comments">Comments</label>
+                            <textarea cols="46" rows="7" name="comments" id="comments"></textarea>
+                        </li>
+                        
+                        <li>
+                            <input class="btn btn-submit" type="submit" value="Submit" onclick="submit_click();"/>
+                            <small>or press <strong>enter</strong></small>
+                        </li>
+                        
+                    </ul>
+                </form>  
+            </div>
+        </div>
+    </article>
+    
+    <script type="text/javascript">
+        function submit_click(){
+            var name = document.getElementById('name').value;
+            var email = document.getElementById('email').value;
+            var comments = document.getElementById('comments').value;
+            
+            if(!email.trim()){
+                alert('Please enter the email!');
+            }else{
+                return confirm('전송할까?');
+            }
+        }
+        
+        function submitForm(sub){
+            document.forms[sub].submit();
+        }
+        
+    </script>
+    
+    <!-- 바닥글 영역 -->
+    <footer class="page-footer green">
+        <div class="container">
+            <div class="row">
+                <div class="col l6 s12">
+                    <h3 class="white-text">Network Computing and System Laboratory</h3>
+                    <p class="grey-text text-lighten-4">Dept of Computer Engineering
+                        <br>Keimyung University</p>
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <div class="container"> &copy; 2017 Copyright 
+                <a href="http://ncs.kmu.ac.kr" target="_blank" class="white-text">NCS Lab</a> 
+                design by JIHYE PYO </div>
+        </div>
+    </footer>
+</body>
+
+</html>
