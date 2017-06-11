@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Interpret Program</title>
+    <link rel="stylesheet" type="text/css" href="css/extern.css">
+    <link rel="shortcut icon" type="image/x-icon" href="resource/shortcut-icon.png" />
+ </head>
+        
+<body>
+    <!-- 네비게이션 영역-->
+    <nav class="">
+        <div class="nav-wrapper container"> 
+            <a class="brand-logo">Interpret Program</a> 
+        </div>
+        <div class="topnav hide-on-med-and-down"> 
+            <a href="contact.html">Contact</a> 
+            <a href="user.html">User</a> 
+            <a class="active" href="">Total</a> 
+            <a href="index.html">Home</a> 
+        </div>
+    </nav>
+    
+    <!--본문 영역-->
+    <article>     
+        <h1 id="bigOne"></h1>
+    </article>
+    
+    
+    <script src="https://www.gstatic.com/firebasejs/3.7.4/firebase.js"></script>
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyBHrHa7DpYLsvOvMQzbPiJZ_DRhnEjcneQ",
+            authDomain: "translateprogram-e53b4.firebaseapp.com",
+            databaseURL: "https://translateprogram-e53b4.firebaseio.com",
+            storageBucket: "translateprogram-e53b4.appspot.com",
+            messagingSenderId: "36080548795"
+        };
+        firebase.initializeApp(config);
+        
+        var bigOne = document.getElementById('bigOne');
+        var dbRef = firebawse.database().ref().child('text');
+        dbRef.on('value',snap=>bigOne.innerText=snap.val());
+    </script>
+    
+    <!-- 바닥글 영역 -->
+    <footer class="page-footer green">
+        <div class="container">
+            <div class="row">
+                <div class="col l6 s12">
+                    <h3 class="white-text">Network Computing and System Laboratory</h3>
+                    <p class="grey-text text-lighten-4">Dept of Computer Engineering
+                        <br>Keimyung University</p>
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <div class="container"> &copy; 2017 Copyright 
+                <a href="http://ncs.kmu.ac.kr" target="_blank" class="white-text">NCS Lab</a> 
+                design by JIHYE PYO </div>
+        </div>
+    </footer>
+</body>
+
+</html>

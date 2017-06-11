@@ -15,6 +15,46 @@
       },
       "oauth_client": [
         {
+          "client_id": "36080548795-669beoho32kb02k9atdgrfiqgr1qg5g4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.pyojihye.translateprogram",
+            "certificate_hash": "72923849a681c1103ddf5937e3e812c8f09fe2b9"
+          }
+        },
+        {
+          "client_id": "36080548795-e4i80rpmv7cqck1tr58unsia7js1fhg5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.pyojihye.translateprogram",
+            "certificate_hash": "bdb5fd9d75e5f14c741a2b925ea96979efa3cd22"
+          }
+        },
+        {
+          "client_id": "36080548795-415rldn1i99a7i9hasqade4akd928ug1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.pyojihye.translateprogram",
+            "certificate_hash": "0b21cb0705c65fbe5baa11c9efc6480bc6bc50a4"
+          }
+        },
+        {
+          "client_id": "36080548795-djqo8moetj9h8r6dvtccq41h1e8nnkfk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.pyojihye.translateprogram",
+            "certificate_hash": "f0092a3b06393b5555b63047cbb68d4543d29355"
+          }
+        },
+        {
+          "client_id": "36080548795-qrm8fadisoeiqqns4vdr0imn45k7vemn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.pyojihye.translateprogram",
+            "certificate_hash": "88786a965e66c9039a42e2b5d796c8ee9167872b"
+          }
+        },
+        {
           "client_id": "36080548795-m9m61a09qbiji8t54e4vvk909gkrbm4j.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +69,97 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "36080548795-m9m61a09qbiji8t54e4vvk909gkrbm4j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:36080548795:android:8ca16013619a28e9",
+        "android_client_info": {
+          "package_name": "com.ncslab.pyojihye.translateprogram"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "36080548795-ci7794e3g26virr73vga813ssh1hd44d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ncslab.pyojihye.translateprogram",
+            "certificate_hash": "21573e81300e975d964f0d083e9de4e93f4c1f5b"
+          }
+        },
+        {
+          "client_id": "36080548795-47e955j7e92jutpc4ug4c8bop392ksfc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ncslab.pyojihye.translateprogram",
+            "certificate_hash": "0b21cb0705c65fbe5baa11c9efc6480bc6bc50a4"
+          }
+        },
+        {
+          "client_id": "36080548795-b6lmecqm6324h6tclja1c6dsan2iqlio.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ncslab.pyojihye.translateprogram",
+            "certificate_hash": "bdb5fd9d75e5f14c741a2b925ea96979efa3cd22"
+          }
+        },
+        {
+          "client_id": "36080548795-9qr781uddceht8jltbvem111vp5shgr5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ncslab.pyojihye.translateprogram",
+            "certificate_hash": "88786a965e66c9039a42e2b5d796c8ee9167872b"
+          }
+        },
+        {
+          "client_id": "36080548795-7l5c65lt40vmk0otrn2tkjjbcqjl866u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ncslab.pyojihye.translateprogram",
+            "certificate_hash": "72923849a681c1103ddf5937e3e812c8f09fe2b9"
+          }
+        },
+        {
+          "client_id": "36080548795-ad301u3r1q5feu4601h3l3d0tkj0br06.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ncslab.pyojihye.translateprogram",
+            "certificate_hash": "f0092a3b06393b5555b63047cbb68d4543d29355"
+          }
+        },
+        {
+          "client_id": "36080548795-m9m61a09qbiji8t54e4vvk909gkrbm4j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9W2NfsD6cl9K22CMMpbn6-XQjtGiAOHk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "36080548795-m9m61a09qbiji8t54e4vvk909gkrbm4j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

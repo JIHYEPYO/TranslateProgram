@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.pyojihye.translateprogram">
+    package="com.ncslab.pyojihye.translateprogram">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -12,7 +12,7 @@
         android:supportsRtl="true">
 
        <activity
-        android:name=".Activity.IntroActivity"
+        android:name="com.ncslab.pyojihye.translateprogram.Activity.IntroActivity"
         android:theme="@style/NoTitle">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
@@ -22,45 +22,45 @@
        </activity>
 
         <activity
-            android:name=".Activity.LoginActivity"
+            android:name="com.ncslab.pyojihye.translateprogram.Activity.LoginActivity"
             android:theme="@style/NoTitle">
         </activity>
 
         <activity
-            android:name=".Activity.PathActivity"
+            android:name="com.ncslab.pyojihye.translateprogram.Activity.PathActivity"
             android:theme="@style/AppTheme">
         </activity>
 
         <activity
-            android:name=".Activity.SelectModeActivity"
+            android:name="com.ncslab.pyojihye.translateprogram.Activity.SelectModeActivity"
             android:theme="@style/AppTheme">
         </activity>
 
         <activity
-            android:name=".Activity.TrainingOptionActivity"
+            android:name="com.ncslab.pyojihye.translateprogram.Activity.TrainingOptionActivity"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustPan">
         </activity>
 
         <activity
-            android:name=".Activity.TrainingActivity"
+            android:name="com.ncslab.pyojihye.translateprogram.Activity.TrainingActivity"
             android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme">
         </activity>
 
         <activity
-            android:name=".Activity.ViewerActivity"
+            android:name="com.ncslab.pyojihye.translateprogram.Activity.ViewerActivity"
             android:theme="@style/AppTheme">
         </activity>
 
         <activity
-            android:name=".Activity.ViewerOptionActivity"
+            android:name="com.ncslab.pyojihye.translateprogram.Activity.ViewerOptionActivity"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustPan">
         </activity>
 
         <activity
-            android:name=".Activity.DeveloperActivity"
+            android:name="com.ncslab.pyojihye.translateprogram.Activity.DeveloperActivity"
             android:theme="@style/AppTheme">
         </activity>
 
